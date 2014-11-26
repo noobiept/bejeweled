@@ -1,6 +1,8 @@
 /// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../typings/utilities-1.2.d.ts" />
 /// <reference path="gem.ts" />
 /// <reference path="grid.ts" />
+/// <reference path="game.ts" />
 
 var G = {
     CANVAS: null,
@@ -34,25 +36,14 @@ G.PRELOAD = new createjs.LoadQueue();
 var manifest = {
         path: BASE_PATH + 'images/',
         manifest: [
-            { id: 'blue_gem', src: 'element_blue_polygon.png' }
+            { id: 'blue_gem', src: 'element_blue_polygon.png' },
+            { id: 'green_gem', src: 'element_green_diamond.png' }
         ]
     };
 
 G.PRELOAD.on( 'complete', function( event )
     {
-    start();
+    Game.start();
     });
 G.PRELOAD.loadManifest( manifest, true );
 };
-
-
-function start()
-{
-var grid = new Grid( 8 );
-
-
-createjs.Ticker.on( 'tick', function( event )
-    {
-    G.STAGE.update();
-    });
-}
