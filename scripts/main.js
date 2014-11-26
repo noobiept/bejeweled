@@ -24,6 +24,7 @@ window.onload = function () {
     var manifest = {
         path: BASE_PATH + 'images/',
         manifest: [
+            { id: 'gem_selected', src: 'gem_selected.png' },
             { id: 'blue_gem', src: 'element_blue_polygon.png' },
             { id: 'green_gem', src: 'element_green_diamond.png' }
         ]
