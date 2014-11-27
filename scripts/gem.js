@@ -13,7 +13,9 @@ var Gem = (function () {
         g.endFill();
         shape.hitArea = hitArea;
         shape.on('click', function () {
-            Game.gemClicked(_this);
+            if (!_this.is_moving) {
+                Game.gemClicked(_this);
+            }
         });
         shape.addChild(selection);
         shape.addChild(gem);
@@ -23,6 +25,7 @@ var Gem = (function () {
         this.gem = gem;
         this.selection = selection;
         this.shape = shape;
+        this.is_moving = false;
     }
     Gem.init = function (stage) {
         Gem._CONTAINER = new createjs.Container();
@@ -33,7 +36,14 @@ var Gem = (function () {
         this.shape.y = y;
     };
     Gem.prototype.moveTo = function (x, y) {
-        this.positionIn(x, y); //HERE
+        var _this = this;
+        this.is_moving = true;
+        createjs.Tween.get(this.shape, { override: true }).to({
+            x: x,
+            y: y
+        }, 500).call(function () {
+            _this.is_moving = false;
+        });
     };
     Gem.prototype.setSelection = function (value) {
         this.selection.visible = value;

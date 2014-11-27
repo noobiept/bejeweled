@@ -15,6 +15,7 @@ gem: createjs.Bitmap;
 selection: createjs.Bitmap;
 column: number;
 line: number;
+is_moving: boolean;
 
 constructor( id, column, line )
     {
@@ -38,7 +39,10 @@ constructor( id, column, line )
     shape.hitArea = hitArea;
     shape.on( 'click', function()
         {
-        Game.gemClicked( _this );
+        if ( !_this.is_moving )
+            {
+            Game.gemClicked( _this );
+            }
         });
 
     shape.addChild( selection );
@@ -51,6 +55,7 @@ constructor( id, column, line )
     this.gem = gem;
     this.selection = selection;
     this.shape = shape;
+    this.is_moving = false;
     }
 
 positionIn( x, y )
@@ -61,7 +66,16 @@ positionIn( x, y )
 
 moveTo( x, y )
     {
-    this.positionIn( x, y );    //HERE
+    var _this = this;
+    this.is_moving = true;
+
+    createjs.Tween.get( this.shape, { override: true } ).to({
+            x: x,
+            y: y
+        }, 500 ).call( function()
+        {
+        _this.is_moving = false;
+        });
     }
 
 setSelection( value )

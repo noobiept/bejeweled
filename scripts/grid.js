@@ -11,26 +11,25 @@ var Grid = (function () {
             }
         }
     }
-    Grid.prototype.areGemsAdjacent = function (gem1, gem2) {
-        var gem1_column = gem1.column;
-        var gem1_line = gem1.line;
-        var gem2_column = gem2.column;
-        var gem2_line = gem2.line;
-        if (gem1_column > gem2_column + 1 || gem1_column < gem2_column - 1 || gem1_line > gem2_line + 1 || gem1_line < gem2_line - 1) {
-            return false;
+    /*
+        You can only switch 2 gems if they're adjacent with each other, and with a horizontal/vertical orientation
+     */
+    Grid.prototype.isValidSwitch = function (gem1, gem2) {
+        var columnDiff = Math.abs(gem1.column - gem2.column);
+        var lineDiff = Math.abs(gem1.line - gem2.line);
+        if ((columnDiff === 0 && lineDiff === 1) || (lineDiff === 0 && columnDiff === 1)) {
+            return true;
         }
-        return true;
+        return false;
     };
     Grid.prototype.switchGems = function (gem1, gem2) {
         // get the gem position before moving it (so we can then move the selected gem to this position)
-        var gem1_x = gem1.getX();
-        var gem1_y = gem1.getY();
         var gem1_column = gem1.column;
         var gem1_line = gem1.line;
         var gem2_column = gem2.column;
         var gem2_line = gem2.line;
-        gem1.moveTo(gem2.getX(), gem2.getY());
-        gem2.moveTo(gem1_x, gem1_y);
+        gem1.moveTo(gem2_column * Gem.SIZE, gem2_line * Gem.SIZE);
+        gem2.moveTo(gem1_column * Gem.SIZE, gem1_line * Gem.SIZE);
         gem1.column = gem2_column;
         gem1.line = gem2_line;
         gem2.column = gem1_column;

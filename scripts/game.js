@@ -25,7 +25,7 @@ var Game;
             }
             else {
                 // can only switch adjacent gems
-                if (GRID.areGemsAdjacent(gem, SELECTED)) {
+                if (GRID.isValidSwitch(gem, SELECTED)) {
                     GRID.switchGems(gem, SELECTED);
                     SELECTED = null;
                 }
