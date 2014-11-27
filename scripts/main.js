@@ -25,8 +25,13 @@ window.onload = function () {
         path: BASE_PATH + 'images/',
         manifest: [
             { id: 'gem_selected', src: 'gem_selected.png' },
-            { id: 'blue_gem', src: 'element_blue_polygon.png' },
-            { id: 'green_gem', src: 'element_green_diamond.png' }
+            { id: 'blue_gem', src: 'blue_gem.png' },
+            { id: 'green_gem', src: 'green_gem.png' },
+            { id: 'gray_gem', src: 'gray_gem.png' },
+            { id: 'purple_gem', src: 'purple_gem.png' },
+            { id: 'yellow_gem', src: 'gray_gem.png' },
+            { id: 'red_gem', src: 'red_gem.png' },
+            { id: 'orange_gem', src: 'orange_gem.png' }
         ]
     };
     G.PRELOAD.on('complete', function (event) {

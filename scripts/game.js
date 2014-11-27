@@ -2,7 +2,7 @@ var Game;
 (function (Game) {
     var GRID;
     var SELECTED = null;
-    var TYPES_OF_GEMS = ['green_gem', 'blue_gem'];
+    var TYPES_OF_GEMS = ['green_gem', 'blue_gem', 'gray_gem', 'purple_gem', 'yellow_gem', 'red_gem', 'orange_gem'];
     function start() {
         GRID = new Grid(8, TYPES_OF_GEMS);
         createjs.Ticker.on('tick', function (event) {
@@ -17,20 +17,23 @@ var Game;
             gem.setSelection(true);
         }
         else {
+            // clear the selection of previously selected gem
+            SELECTED.setSelection(false);
             // clicked the already selected gem, deselect
             if (gem === SELECTED) {
+                SELECTED = null;
             }
             else {
                 // can only switch adjacent gems
                 if (GRID.areGemsAdjacent(gem, SELECTED)) {
                     GRID.switchGems(gem, SELECTED);
+                    SELECTED = null;
                 }
                 else {
-                    console.log("Gems aren't adjacent.");
+                    SELECTED = gem;
+                    gem.setSelection(true);
                 }
             }
-            SELECTED.setSelection(false);
-            SELECTED = null;
         }
     }
     Game.gemClicked = gemClicked;
