@@ -42,7 +42,7 @@ var manifest = {
             { id: 'green_gem', src: 'green_gem.png' },
             { id: 'gray_gem', src: 'gray_gem.png' },
             { id: 'purple_gem', src: 'purple_gem.png' },
-            { id: 'yellow_gem', src: 'gray_gem.png' },
+            { id: 'yellow_gem', src: 'yellow_gem.png' },
             { id: 'red_gem', src: 'red_gem.png' },
             { id: 'orange_gem', src: 'orange_gem.png' }
         ]

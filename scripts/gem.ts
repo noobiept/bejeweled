@@ -1,7 +1,19 @@
+enum GemType
+    {
+        green_gem,
+        blue_gem,
+        gray_gem,
+        purple_gem,
+        yellow_gem,
+        red_gem,
+        orange_gem
+    }
+
 class Gem
 {
 static _CONTAINER: createjs.Container;
 static SIZE = 50;
+
 
 static init( stage )
     {
@@ -16,13 +28,14 @@ selection: createjs.Bitmap;
 column: number;
 line: number;
 is_moving: boolean;
+id: GemType;
 
-constructor( id, column, line )
+constructor( id: GemType, column, line )
     {
     var _this = this;
 
     var shape = new createjs.Container();
-    var gem = new createjs.Bitmap( G.PRELOAD.getResult( id ) );
+    var gem = new createjs.Bitmap( G.PRELOAD.getResult( GemType[ id ] ) );
     var selection = new createjs.Bitmap( G.PRELOAD.getResult( 'gem_selected' ) );
 
     selection.visible = false;
@@ -56,6 +69,7 @@ constructor( id, column, line )
     this.selection = selection;
     this.shape = shape;
     this.is_moving = false;
+    this.id = id;
     }
 
 positionIn( x, y )
@@ -91,5 +105,12 @@ getX()
 getY()
     {
     return this.shape.y;
+    }
+
+remove()
+    {
+    createjs.Tween.removeTweens( this.shape );
+
+    Gem._CONTAINER.removeChild( this.shape );
     }
 }

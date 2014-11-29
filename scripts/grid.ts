@@ -1,10 +1,15 @@
 class Grid
 {
-grid;
+grid: Gem[][];
+size: number;
 
-constructor( size: number, gemsId: string[] )
+constructor( size: number )
     {
     this.grid = [];
+    this.size = size;
+
+        // GemType is a enum, which will have as key the gem's id, plus the associated position (so we need to divide by 2)
+    var gemTypeCount = Object.keys( GemType ).length / 2;
 
     for (var column = 0 ; column < size ; column++)
         {
@@ -12,9 +17,9 @@ constructor( size: number, gemsId: string[] )
 
         for (var line = 0 ; line < size ; line++)
             {
-            var position = Utilities.getRandomInt( 0, gemsId.length - 1 );
+            var position = Utilities.getRandomInt( 0, gemTypeCount - 1 );
 
-            var gem = new Gem( gemsId[ position ], column, line );
+            var gem = new Gem( position, column, line );
 
             gem.positionIn( column * Gem.SIZE, line * Gem.SIZE );
 
@@ -61,5 +66,18 @@ switchGems( gem1, gem2 )
 
     this.grid[ gem1_column ][ gem1_line ] = gem2;
     this.grid[ gem2_column ][ gem2_line ] = gem1;
+    }
+
+
+removeGem( column, line )
+    {
+    var gem = this.grid[ column ][ line ];
+
+    if ( gem !== null )
+        {
+        gem.remove();
+
+        this.grid[ column ][ line ] = null;
+        }
     }
 }

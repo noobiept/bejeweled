@@ -1,11 +1,14 @@
 var Grid = (function () {
-    function Grid(size, gemsId) {
+    function Grid(size) {
         this.grid = [];
+        this.size = size;
+        // GemType is a enum, which will have as key the gem's id, plus the associated position (so we need to divide by 2)
+        var gemTypeCount = Object.keys(GemType).length / 2;
         for (var column = 0; column < size; column++) {
             this.grid[column] = [];
             for (var line = 0; line < size; line++) {
-                var position = Utilities.getRandomInt(0, gemsId.length - 1);
-                var gem = new Gem(gemsId[position], column, line);
+                var position = Utilities.getRandomInt(0, gemTypeCount - 1);
+                var gem = new Gem(position, column, line);
                 gem.positionIn(column * Gem.SIZE, line * Gem.SIZE);
                 this.grid[column][line] = gem;
             }
@@ -36,6 +39,13 @@ var Grid = (function () {
         gem2.line = gem1_line;
         this.grid[gem1_column][gem1_line] = gem2;
         this.grid[gem2_column][gem2_line] = gem1;
+    };
+    Grid.prototype.removeGem = function (column, line) {
+        var gem = this.grid[column][line];
+        if (gem !== null) {
+            gem.remove();
+            this.grid[column][line] = null;
+        }
     };
     return Grid;
 })();
