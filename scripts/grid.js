@@ -5,15 +5,18 @@ var Grid = (function () {
         for (var column = 0; column < size; column++) {
             this.grid[column] = [];
             for (var line = 0; line < size; line++) {
-                this.newRandomGem(column, line);
+                this.newRandomGem(column, line, true);
             }
         }
     }
-    Grid.prototype.newRandomGem = function (column, line) {
-        var position = Utilities.getRandomInt(0, Gem.TYPE_COUNT - 1);
-        var gem = new Gem(position, column, line);
-        gem.positionIn(column * Gem.SIZE, line * Gem.SIZE);
+    Grid.prototype.newRandomGem = function (column, line, positionGem) {
+        var gemType = Utilities.getRandomInt(0, Gem.TYPE_COUNT - 1);
+        var gem = new Gem(gemType);
+        if (positionGem === true) {
+            gem.positionIn(column, line);
+        }
         this.grid[column][line] = gem;
+        return gem;
     };
     /*
         You can only switch 2 gems if they're adjacent with each other, and with a horizontal/vertical orientation
@@ -32,8 +35,8 @@ var Grid = (function () {
         var gem1_line = gem1.line;
         var gem2_column = gem2.column;
         var gem2_line = gem2.line;
-        gem1.moveTo(gem2_column * Gem.SIZE, gem2_line * Gem.SIZE);
-        gem2.moveTo(gem1_column * Gem.SIZE, gem1_line * Gem.SIZE);
+        gem1.moveTo(gem2_column, gem2_line);
+        gem2.moveTo(gem1_column, gem1_line);
         gem1.column = gem2_column;
         gem1.line = gem2_line;
         gem2.column = gem1_column;
@@ -149,7 +152,7 @@ var Grid = (function () {
             for (line = size - 1; line >= 0; line--) {
                 gem = gems[line - gemDiff];
                 if (gem) {
-                    gem.moveTo(column * Gem.SIZE, line * Gem.SIZE);
+                    gem.moveTo(column, line);
                     this.grid[column][line] = gem;
                 }
                 else {
@@ -158,7 +161,9 @@ var Grid = (function () {
             }
             for (line = 0; line < size; line++) {
                 if (this.grid[column][line] === null) {
-                    this.newRandomGem(column, line);
+                    gem = this.newRandomGem(column, line, false);
+                    gem.positionIn(column, -(line + 1));
+                    gem.moveTo(column, line);
                 }
                 else {
                     break;

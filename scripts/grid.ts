@@ -14,21 +14,26 @@ constructor( size: number )
 
         for (var line = 0 ; line < size ; line++)
             {
-            this.newRandomGem( column, line );
+            this.newRandomGem( column, line, true );
             }
         }
     }
 
 
-newRandomGem( column, line )
+newRandomGem( column: number, line: number, positionGem: boolean )
     {
-    var position = Utilities.getRandomInt( 0, Gem.TYPE_COUNT - 1 );
+    var gemType = Utilities.getRandomInt( 0, Gem.TYPE_COUNT - 1 );
 
-    var gem = new Gem( position, column, line );
+    var gem = new Gem( gemType );
 
-    gem.positionIn( column * Gem.SIZE, line * Gem.SIZE );
+    if ( positionGem === true )
+        {
+        gem.positionIn( column, line );
+        }
 
     this.grid[ column ][ line ] = gem;
+
+    return gem;
     }
 
 
@@ -59,8 +64,8 @@ switchGems( gem1, gem2 )
     var gem2_column = gem2.column;
     var gem2_line = gem2.line;
 
-    gem1.moveTo( gem2_column * Gem.SIZE, gem2_line * Gem.SIZE );
-    gem2.moveTo( gem1_column * Gem.SIZE, gem1_line * Gem.SIZE );
+    gem1.moveTo( gem2_column, gem2_line );
+    gem2.moveTo( gem1_column, gem1_line );
 
     gem1.column = gem2_column;
     gem1.line = gem2_line;
@@ -231,7 +236,7 @@ checkForChains(): boolean
 reAddGems()
     {
     var size = this.size;
-    var gem;
+    var gem: Gem;
     var line;
 
     for (var column = 0 ; column < size ; column++)
@@ -258,7 +263,7 @@ reAddGems()
 
             if ( gem )
                 {
-                gem.moveTo( column * Gem.SIZE, line * Gem.SIZE );
+                gem.moveTo( column, line );
 
                 this.grid[ column ][ line ] = gem;
                 }
@@ -275,7 +280,10 @@ reAddGems()
             {
             if ( this.grid[ column ][ line ] === null )
                 {
-                this.newRandomGem( column, line );
+                gem = this.newRandomGem( column, line, false );
+
+                gem.positionIn( column, -(line + 1) );
+                gem.moveTo( column, line );
                 }
 
             else

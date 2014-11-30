@@ -9,7 +9,7 @@ var GemType;
     GemType[GemType["orange_gem"] = 6] = "orange_gem";
 })(GemType || (GemType = {}));
 var Gem = (function () {
-    function Gem(id, column, line) {
+    function Gem(id) {
         var _this = this;
         var shape = new createjs.Container();
         var gem = new createjs.Bitmap(G.PRELOAD.getResult(GemType[id]));
@@ -30,8 +30,8 @@ var Gem = (function () {
         shape.addChild(selection);
         shape.addChild(gem);
         Gem._CONTAINER.addChild(shape);
-        this.column = column;
-        this.line = line;
+        this.column = -1; // need to call positionIn() or moveTo() to position the gem
+        this.line = -1;
         this.gem = gem;
         this.selection = selection;
         this.shape = shape;
@@ -42,13 +42,19 @@ var Gem = (function () {
         Gem._CONTAINER = new createjs.Container();
         stage.addChild(Gem._CONTAINER);
     };
-    Gem.prototype.positionIn = function (x, y) {
-        this.shape.x = x;
-        this.shape.y = y;
+    Gem.prototype.positionIn = function (column, line) {
+        this.column = column;
+        this.line = line;
+        this.shape.x = column * Gem.SIZE;
+        this.shape.y = line * Gem.SIZE;
     };
-    Gem.prototype.moveTo = function (x, y) {
+    Gem.prototype.moveTo = function (column, line) {
         var _this = this;
         this.is_moving = true;
+        var x = column * Gem.SIZE;
+        var y = line * Gem.SIZE;
+        this.column = column;
+        this.line = line;
         createjs.Tween.get(this.shape, { override: true }).to({
             x: x,
             y: y

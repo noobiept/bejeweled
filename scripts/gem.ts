@@ -33,7 +33,7 @@ line: number;
 is_moving: boolean;
 id: GemType;
 
-constructor( id: GemType, column, line )
+constructor( id: GemType )
     {
     var _this = this;
 
@@ -66,8 +66,8 @@ constructor( id: GemType, column, line )
 
     Gem._CONTAINER.addChild( shape );
 
-    this.column = column;
-    this.line = line;
+    this.column = -1;   // need to call positionIn() or moveTo() to position the gem
+    this.line = -1;
     this.gem = gem;
     this.selection = selection;
     this.shape = shape;
@@ -75,16 +75,25 @@ constructor( id: GemType, column, line )
     this.id = id;
     }
 
-positionIn( x, y )
+positionIn( column, line )
     {
-    this.shape.x = x;
-    this.shape.y = y;
+    this.column = column;
+    this.line = line;
+
+    this.shape.x = column * Gem.SIZE;
+    this.shape.y = line * Gem.SIZE;
     }
 
-moveTo( x, y )
+
+moveTo( column, line )
     {
     var _this = this;
     this.is_moving = true;
+    var x = column * Gem.SIZE;
+    var y = line * Gem.SIZE;
+
+    this.column = column;
+    this.line = line;
 
     createjs.Tween.get( this.shape, { override: true } ).to({
             x: x,
