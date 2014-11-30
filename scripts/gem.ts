@@ -14,6 +14,9 @@ class Gem
 static _CONTAINER: createjs.Container;
 static SIZE = 50;
 
+    // GemType is a enum, which will have as key the gem's id, plus the associated position (so we need to divide by 2)
+static TYPE_COUNT = Object.keys( GemType ).length / 2;
+
 
 static init( stage )
     {

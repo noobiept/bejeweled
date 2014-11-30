@@ -8,25 +8,29 @@ constructor( size: number )
     this.grid = [];
     this.size = size;
 
-        // GemType is a enum, which will have as key the gem's id, plus the associated position (so we need to divide by 2)
-    var gemTypeCount = Object.keys( GemType ).length / 2;
-
     for (var column = 0 ; column < size ; column++)
         {
         this.grid[ column ] = [];
 
         for (var line = 0 ; line < size ; line++)
             {
-            var position = Utilities.getRandomInt( 0, gemTypeCount - 1 );
-
-            var gem = new Gem( position, column, line );
-
-            gem.positionIn( column * Gem.SIZE, line * Gem.SIZE );
-
-            this.grid[ column ][ line ] = gem;
+            this.newRandomGem( column, line );
             }
         }
     }
+
+
+newRandomGem( column, line )
+    {
+    var position = Utilities.getRandomInt( 0, Gem.TYPE_COUNT - 1 );
+
+    var gem = new Gem( position, column, line );
+
+    gem.positionIn( column * Gem.SIZE, line * Gem.SIZE );
+
+    this.grid[ column ][ line ] = gem;
+    }
+
 
 /*
     You can only switch 2 gems if they're adjacent with each other, and with a horizontal/vertical orientation
@@ -78,6 +82,207 @@ removeGem( column, line )
         gem.remove();
 
         this.grid[ column ][ line ] = null;
+        }
+    }
+
+
+
+/*
+    Checks for gem chains (3+ gems in horizontal/vertical line), and clears them
+ */
+
+checkForChains(): boolean
+    {
+    var _this = this;
+    var grid = this.grid;
+    var size = this.size;
+    var foundChains = false;
+
+    var removeChain = function( endColumn, endLine, count, vertical: boolean )
+        {
+        if ( vertical === true )
+            {
+            for (var line = endLine ; line > endLine - count ; line--)
+                {
+                _this.removeGem( endColumn, line );
+                }
+            }
+
+        else
+            {
+            for (var column = endColumn ; column > endColumn - count ; column--)
+                {
+                _this.removeGem( column, endLine );
+                }
+            }
+        };
+
+
+    for (var column = 0 ; column < size ; column++)
+        {
+        for (var line = 0 ; line < size ; line++)
+            {
+            var referenceGem = grid[ column ][ line ];
+
+            if ( referenceGem === null )
+                {
+                continue;
+                }
+
+            var countLeft = 0;
+            var countRight = 0;
+            var countUp = 0;
+            var countDown = 0;
+            var tempGem;
+            var a;
+
+                // count to the right
+            for (a = column + 1 ; a < size ; a++)
+                {
+                tempGem = grid[ a ][ line ];
+
+                if ( tempGem && tempGem.id === referenceGem.id )
+                    {
+                    countRight++;
+                    }
+
+                else
+                    {
+                    break;
+                    }
+                }
+
+                // count to the left
+            for (a = column - 1 ; a >= 0 ; a--)
+                {
+                tempGem = grid[ a ][ line ];
+
+                if ( tempGem && tempGem.id === referenceGem.id )
+                    {
+                    countLeft++;
+                    }
+
+                else
+                    {
+                    break;
+                    }
+                }
+
+                // count up
+            for (a = line - 1 ; a >= 0 ; a--)
+                {
+                tempGem = grid[ column ][ a ];
+
+                if ( tempGem && tempGem.id === referenceGem.id )
+                    {
+                    countUp++;
+                    }
+
+                else
+                    {
+                    break;
+                    }
+                }
+
+                // count down
+            for (a = line + 1 ; a < size ; a++)
+                {
+                tempGem = grid[ column ][ a ];
+
+                if ( tempGem && tempGem.id === referenceGem.id )
+                    {
+                    countDown++;
+                    }
+
+                else
+                    {
+                    break;
+                    }
+                }
+
+            var horizontalCount = countLeft + countRight + 1;
+            var verticalCount = countUp + countDown + 1;
+
+            if ( horizontalCount >= 3 )
+                {
+                removeChain( column + countRight, line, horizontalCount, false );
+
+                foundChains = true;
+                }
+
+            if ( verticalCount >= 3 )
+                {
+                removeChain( column, line + countDown, verticalCount, true );
+
+                foundChains = true;
+                }
+            }
+        }
+
+    return foundChains;
+    }
+
+
+
+/*
+    Existing gems fall down (so that all the gaps are on top), and then add new gems on top.
+ */
+
+reAddGems()
+    {
+    var size = this.size;
+    var gem;
+    var line;
+
+    for (var column = 0 ; column < size ; column++)
+        {
+        var gems = [];
+
+            // get all the gems in this column
+        for (line = 0 ; line < size ; line++)
+            {
+            gem = this.grid[ column ][ line ];
+
+            if ( gem !== null )
+                {
+                gems.push( gem );
+                }
+            }
+
+        var gemDiff = size - gems.length;
+
+            // move all the gems to the bottom (all the gaps on top)
+        for (line = size - 1 ; line >= 0 ; line--)
+            {
+            gem = gems[ line - gemDiff ];
+
+            if ( gem )
+                {
+                gem.moveTo( column * Gem.SIZE, line * Gem.SIZE );
+
+                this.grid[ column ][ line ] = gem;
+                }
+
+            else
+                {
+                this.grid[ column ][ line ] = null;
+                }
+            }
+
+
+            // re-add new random gems
+        for (line = 0 ; line < size ; line++)
+            {
+            if ( this.grid[ column ][ line ] === null )
+                {
+                this.newRandomGem( column, line );
+                }
+
+            else
+                {
+                break;
+                }
+            }
         }
     }
 }
