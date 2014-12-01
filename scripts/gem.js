@@ -48,7 +48,7 @@ var Gem = (function () {
         this.shape.x = column * Gem.SIZE;
         this.shape.y = line * Gem.SIZE;
     };
-    Gem.prototype.moveTo = function (column, line) {
+    Gem.prototype.moveTo = function (column, line, callback) {
         var _this = this;
         this.is_moving = true;
         var x = column * Gem.SIZE;
@@ -60,6 +60,9 @@ var Gem = (function () {
             y: y
         }, 500).call(function () {
             _this.is_moving = false;
+            if (callback) {
+                callback();
+            }
         });
     };
     Gem.prototype.setSelection = function (value) {

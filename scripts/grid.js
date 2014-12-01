@@ -29,14 +29,23 @@ var Grid = (function () {
         }
         return false;
     };
-    Grid.prototype.switchGems = function (gem1, gem2) {
+    Grid.prototype.switchGems = function (gem1, gem2, checkIfValid) {
+        if (checkIfValid === void 0) { checkIfValid = true; }
+        var _this = this;
         // get the gem position before moving it (so we can then move the selected gem to this position)
         var gem1_column = gem1.column;
         var gem1_line = gem1.line;
         var gem2_column = gem2.column;
         var gem2_line = gem2.line;
         gem1.moveTo(gem2_column, gem2_line);
-        gem2.moveTo(gem1_column, gem1_line);
+        gem2.moveTo(gem1_column, gem1_line, function () {
+            if (checkIfValid) {
+                // if a chain wasn't cleared, means we need to move undo the switch
+                if (!_this.clearChains()) {
+                    _this.switchGems(gem1, gem2, false);
+                }
+            }
+        });
         gem1.column = gem2_column;
         gem1.line = gem2_line;
         gem2.column = gem1_column;
@@ -50,6 +59,14 @@ var Grid = (function () {
             gem.remove();
             this.grid[column][line] = null;
         }
+    };
+    Grid.prototype.clearChains = function () {
+        var aChainCleared = false;
+        while (this.checkForChains()) {
+            aChainCleared = true;
+            this.reAddGems();
+        }
+        return aChainCleared;
     };
     /*
         Checks for gem chains (3+ gems in horizontal/vertical line), and clears them

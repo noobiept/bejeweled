@@ -55,8 +55,10 @@ isValidSwitch( gem1, gem2 )
     return false;
     }
 
-switchGems( gem1, gem2 )
+switchGems( gem1, gem2, checkIfValid= true )
     {
+    var _this = this;
+
         // get the gem position before moving it (so we can then move the selected gem to this position)
     var gem1_column = gem1.column;
     var gem1_line = gem1.line;
@@ -65,7 +67,18 @@ switchGems( gem1, gem2 )
     var gem2_line = gem2.line;
 
     gem1.moveTo( gem2_column, gem2_line );
-    gem2.moveTo( gem1_column, gem1_line );
+    gem2.moveTo( gem1_column, gem1_line, function()
+        {
+        if ( checkIfValid )
+            {
+                // if a chain wasn't cleared, means we need to move undo the switch
+            if ( !_this.clearChains() )
+                {
+                _this.switchGems( gem1, gem2, false );
+                }
+            }
+
+        });
 
     gem1.column = gem2_column;
     gem1.line = gem2_line;
@@ -88,6 +101,20 @@ removeGem( column, line )
 
         this.grid[ column ][ line ] = null;
         }
+    }
+
+
+clearChains(): boolean
+    {
+    var aChainCleared = false;
+
+    while( this.checkForChains() )
+        {
+        aChainCleared = true;
+        this.reAddGems();
+        }
+
+    return aChainCleared;
     }
 
 

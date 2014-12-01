@@ -13,16 +13,7 @@ export function start()
         G.STAGE.update();
         });
 
-    clearChains();
-    }
-
-
-export function clearChains()
-    {
-    while( GRID.checkForChains() )
-        {
-        GRID.reAddGems();
-        }
+    GRID.clearChains();
     }
 
 
@@ -55,10 +46,6 @@ export function gemClicked( gem: Gem )
                 {
                 GRID.switchGems( gem, SELECTED );
                 SELECTED = null;
-
-                //HERE - check if it leads to a 3+ chain of same type/color gem
-
-                Game.clearChains();
                 }
 
             else

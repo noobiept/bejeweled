@@ -85,7 +85,7 @@ positionIn( column, line )
     }
 
 
-moveTo( column, line )
+moveTo( column, line, callback?: () => any )
     {
     var _this = this;
     this.is_moving = true;
@@ -101,6 +101,11 @@ moveTo( column, line )
         }, 500 ).call( function()
         {
         _this.is_moving = false;
+
+        if ( callback )
+            {
+            callback();
+            }
         });
     }
 

@@ -7,15 +7,9 @@ var Game;
         createjs.Ticker.on('tick', function (event) {
             G.STAGE.update();
         });
-        clearChains();
+        GRID.clearChains();
     }
     Game.start = start;
-    function clearChains() {
-        while (GRID.checkForChains()) {
-            GRID.reAddGems();
-        }
-    }
-    Game.clearChains = clearChains;
     function gemClicked(gem) {
         // no selection yet
         if (SELECTED === null) {
@@ -34,8 +28,6 @@ var Game;
                 if (GRID.isValidSwitch(gem, SELECTED)) {
                     GRID.switchGems(gem, SELECTED);
                     SELECTED = null;
-                    //HERE - check if it leads to a 3+ chain of same type/color gem
-                    Game.clearChains();
                 }
                 else {
                     SELECTED = gem;
