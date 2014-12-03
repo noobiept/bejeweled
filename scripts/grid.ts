@@ -17,6 +17,8 @@ constructor( size: number )
             this.newRandomGem( column, line, true );
             }
         }
+
+    this.clearChains();
     }
 
 
@@ -118,6 +120,25 @@ clearChains(): boolean
     }
 
 
+clearGemFlags()
+    {
+    var size = this.size;
+
+    for (var column = 0 ; column < size ; column++)
+        {
+        for (var line = 0 ; line < size ; line++)
+            {
+            var gem = this.grid[ column ][ line ];
+
+            if ( gem )
+                {
+                gem.already_checked = false;
+                }
+            }
+        }
+    }
+
+
 
 /*
     Checks for gem chains (3+ gems in horizontal/vertical line), and clears them
@@ -161,99 +182,186 @@ checkForChains(): boolean
                 continue;
                 }
 
-            var countLeft = 0;
-            var countRight = 0;
-            var countUp = 0;
-            var countDown = 0;
-            var tempGem;
-            var a;
+            var horizontalChains = [];
+            var verticalChains = [];
 
-                // count to the right
-            for (a = column + 1 ; a < size ; a++)
+            var check = function( gem, id )
                 {
-                tempGem = grid[ a ][ line ];
-
-                if ( tempGem && tempGem.id === referenceGem.id )
+                if ( !gem ||
+                     gem.already_checked ||
+                     gem.id !== id )
                     {
-                    countRight++;
+                    return;
                     }
 
-                else
+                var chain = _this.checkHorizontalChain( gem );
+                if ( chain !== null )
                     {
-                    break;
+                    horizontalChains.push( chain );
                     }
-                }
 
-                // count to the left
-            for (a = column - 1 ; a >= 0 ; a--)
+                chain = _this.checkVerticalChain( gem );
+                if ( chain !== null )
+                    {
+                    verticalChains.push( chain );
+                    }
+
+                gem.already_checked = true;
+
+                var adjacents = _this.getAdjacentGems( gem.column, gem.line );
+
+                for (var a = 0 ; a < adjacents.length ; a++)
+                    {
+                    check( adjacents[ a ], id );
+                    }
+                };
+
+            check( referenceGem, referenceGem.id );
+
+            for (var a = 0 ; a < horizontalChains.length ; a++)
                 {
-                tempGem = grid[ a ][ line ];
-
-                if ( tempGem && tempGem.id === referenceGem.id )
-                    {
-                    countLeft++;
-                    }
-
-                else
-                    {
-                    break;
-                    }
-                }
-
-                // count up
-            for (a = line - 1 ; a >= 0 ; a--)
-                {
-                tempGem = grid[ column ][ a ];
-
-                if ( tempGem && tempGem.id === referenceGem.id )
-                    {
-                    countUp++;
-                    }
-
-                else
-                    {
-                    break;
-                    }
-                }
-
-                // count down
-            for (a = line + 1 ; a < size ; a++)
-                {
-                tempGem = grid[ column ][ a ];
-
-                if ( tempGem && tempGem.id === referenceGem.id )
-                    {
-                    countDown++;
-                    }
-
-                else
-                    {
-                    break;
-                    }
-                }
-
-            var horizontalCount = countLeft + countRight + 1;
-            var verticalCount = countUp + countDown + 1;
-
-            if ( horizontalCount >= 3 )
-                {
-                removeChain( column + countRight, line, horizontalCount, false );
-
                 foundChains = true;
+
+                var chain = horizontalChains[ a ];
+                removeChain( chain.column + chain.size - 1, chain.line, chain.size, false );
                 }
 
-            if ( verticalCount >= 3 )
+            for (var a = 0 ; a < verticalChains.length ; a++)
                 {
-                removeChain( column, line + countDown, verticalCount, true );
-
                 foundChains = true;
+
+                var chain = verticalChains[ a ];
+                removeChain( chain.column, chain.line + chain.size - 1, chain.size, true );
                 }
             }
         }
 
+
+    this.clearGemFlags();
+
     return foundChains;
     }
 
+
+checkHorizontalChain( referenceGem )
+    {
+    var size = this.size;
+    var grid = this.grid;
+    var countLeft = 0;
+    var countRight = 0;
+    var column = referenceGem.column;
+    var line = referenceGem.line;
+    var a;
+    var gem;
+
+        // count to the right
+    for (a = column + 1 ; a < size ; a++)
+        {
+        gem = grid[ a ][ line ];
+
+        if ( gem && gem.id === referenceGem.id )
+            {
+            countRight++;
+            }
+
+        else
+            {
+            break;
+            }
+        }
+
+            // count to the left
+    for (a = column - 1 ; a >= 0 ; a--)
+        {
+        gem = grid[ a ][ line ];
+
+        if ( gem && gem.id === referenceGem.id )
+            {
+            countLeft++;
+            }
+
+        else
+            {
+            break;
+            }
+        }
+
+    var count = countLeft + countRight + 1;
+
+    if ( count >= 3 )
+        {
+        return {
+                line: line,
+                column: column - countLeft,
+                size: count
+            }
+        }
+
+    else
+        {
+        return null;
+        }
+    }
+
+checkVerticalChain( referenceGem )
+    {
+    var size = this.size;
+    var grid = this.grid;
+    var countUp = 0;
+    var countDown = 0;
+    var column = referenceGem.column;
+    var line = referenceGem.line;
+    var a;
+    var gem;
+
+        // count up
+    for (a = line - 1 ; a >= 0 ; a--)
+        {
+        gem = grid[ column ][ a ];
+
+        if ( gem && gem.id === referenceGem.id )
+            {
+            countUp++;
+            }
+
+        else
+            {
+            break;
+            }
+        }
+
+        // count down
+    for (a = line + 1 ; a < size ; a++)
+        {
+        gem = grid[ column ][ a ];
+
+        if ( gem && gem.id === referenceGem.id )
+            {
+            countDown++;
+            }
+
+        else
+            {
+            break;
+            }
+        }
+
+    var count = countDown + countUp + 1;
+
+    if ( count >= 3 )
+        {
+        return {
+                line: line - countUp,
+                column: column,
+                size: count
+            }
+        }
+
+    else
+        {
+        return null;
+        }
+    }
 
 
 /*
@@ -319,5 +427,33 @@ reAddGems()
                 }
             }
         }
+    }
+
+
+getAdjacentGems( column, line )
+    {
+    var adjacentGems = [];
+
+    if ( column > 0 )
+        {
+        adjacentGems.push( this.grid[ column - 1 ][ line ] );
+        }
+
+    if ( column < this.size - 1 )
+        {
+        adjacentGems.push( this.grid[ column + 1 ][ line ] );
+        }
+
+    if ( line > 0 )
+        {
+        adjacentGems.push( this.grid[ column ][ line - 1 ] );
+        }
+
+    if ( line < this.size - 1 )
+        {
+        adjacentGems.push( this.grid[ column ][ line + 1 ] );
+        }
+
+    return adjacentGems;
     }
 }

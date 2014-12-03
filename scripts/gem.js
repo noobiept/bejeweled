@@ -37,6 +37,7 @@ var Gem = (function () {
         this.shape = shape;
         this.is_moving = false;
         this.id = id;
+        this.already_checked = false;
     }
     Gem.init = function (stage) {
         Gem._CONTAINER = new createjs.Container();
@@ -74,9 +75,17 @@ var Gem = (function () {
     Gem.prototype.getY = function () {
         return this.shape.y;
     };
-    Gem.prototype.remove = function () {
+    Gem.prototype.remove = function (callback) {
         createjs.Tween.removeTweens(this.shape);
-        Gem._CONTAINER.removeChild(this.shape);
+        createjs.Tween.get(this.shape).to({
+            scaleX: 0,
+            scaleY: 0
+        }, 400).call(function () {
+            Gem._CONTAINER.removeChild(this.shape);
+            if (callback) {
+                callback();
+            }
+        });
     };
     Gem.SIZE = 50;
     // GemType is a enum, which will have as key the gem's id, plus the associated position (so we need to divide by 2)

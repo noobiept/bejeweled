@@ -3,6 +3,7 @@ module Game
 var GRID: Grid;
 var SELECTED: Gem = null;
 
+
 export function start()
     {
     GRID = new Grid( 8 );
@@ -12,8 +13,6 @@ export function start()
         {
         G.STAGE.update();
         });
-
-    GRID.clearChains();
     }
 
 

@@ -7,7 +7,6 @@ var Game;
         createjs.Ticker.on('tick', function (event) {
             G.STAGE.update();
         });
-        GRID.clearChains();
     }
     Game.start = start;
     function gemClicked(gem) {
