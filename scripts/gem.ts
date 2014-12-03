@@ -32,7 +32,8 @@ column: number;
 line: number;
 is_moving: boolean;
 id: GemType;
-already_checked: boolean;
+already_checked_horizontal: boolean;
+already_checked_vertical: boolean;
 
 constructor( id: GemType )
     {
@@ -74,7 +75,8 @@ constructor( id: GemType )
     this.shape = shape;
     this.is_moving = false;
     this.id = id;
-    this.already_checked = false;
+    this.already_checked_horizontal = false;
+    this.already_checked_vertical = false;
     }
 
 positionIn( column, line )

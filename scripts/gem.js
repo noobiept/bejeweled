@@ -37,7 +37,8 @@ var Gem = (function () {
         this.shape = shape;
         this.is_moving = false;
         this.id = id;
-        this.already_checked = false;
+        this.already_checked_horizontal = false;
+        this.already_checked_vertical = false;
     }
     Gem.init = function (stage) {
         Gem._CONTAINER = new createjs.Container();

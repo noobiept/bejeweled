@@ -132,7 +132,8 @@ clearGemFlags()
 
             if ( gem )
                 {
-                gem.already_checked = false;
+                gem.already_checked_horizontal = false;
+                gem.already_checked_vertical = false;
                 }
             }
         }
@@ -188,25 +189,33 @@ checkForChains(): boolean
             var check = function( gem, id )
                 {
                 if ( !gem ||
-                     gem.already_checked ||
-                     gem.id !== id )
+                     gem.id !== id ||
+                     gem.already_checked_horizontal && gem.already_checked_vertical )
                     {
                     return;
                     }
 
-                var chain = _this.checkHorizontalChain( gem );
-                if ( chain !== null )
+                if ( !gem.already_checked_horizontal )
                     {
-                    horizontalChains.push( chain );
+                    var chain = _this.checkHorizontalChain( gem );
+                    if ( chain !== null )
+                        {
+                        horizontalChains.push( chain );
+                        }
+
+                    gem.already_checked_horizontal = true;
                     }
 
-                chain = _this.checkVerticalChain( gem );
-                if ( chain !== null )
+                if ( !gem.already_checked_vertical )
                     {
-                    verticalChains.push( chain );
-                    }
+                    chain = _this.checkVerticalChain( gem );
+                    if ( chain !== null )
+                        {
+                        verticalChains.push( chain );
+                        }
 
-                gem.already_checked = true;
+                    gem.already_checked_vertical = true;
+                    }
 
                 var adjacents = _this.getAdjacentGems( gem.column, gem.line );
 
@@ -261,6 +270,7 @@ checkHorizontalChain( referenceGem )
 
         if ( gem && gem.id === referenceGem.id )
             {
+            gem.already_checked_horizontal = true;
             countRight++;
             }
 
@@ -277,6 +287,7 @@ checkHorizontalChain( referenceGem )
 
         if ( gem && gem.id === referenceGem.id )
             {
+            gem.already_checked_horizontal = true;
             countLeft++;
             }
 
@@ -321,6 +332,7 @@ checkVerticalChain( referenceGem )
 
         if ( gem && gem.id === referenceGem.id )
             {
+            gem.already_checked_vertical = true;
             countUp++;
             }
 
@@ -337,6 +349,7 @@ checkVerticalChain( referenceGem )
 
         if ( gem && gem.id === referenceGem.id )
             {
+            gem.already_checked_vertical = true;
             countDown++;
             }
 

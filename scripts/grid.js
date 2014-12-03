@@ -75,7 +75,8 @@ var Grid = (function () {
             for (var line = 0; line < size; line++) {
                 var gem = this.grid[column][line];
                 if (gem) {
-                    gem.already_checked = false;
+                    gem.already_checked_horizontal = false;
+                    gem.already_checked_vertical = false;
                 }
             }
         }
@@ -109,18 +110,23 @@ var Grid = (function () {
                 var horizontalChains = [];
                 var verticalChains = [];
                 var check = function (gem, id) {
-                    if (!gem || gem.already_checked || gem.id !== id) {
+                    if (!gem || gem.id !== id || gem.already_checked_horizontal && gem.already_checked_vertical) {
                         return;
                     }
-                    var chain = _this.checkHorizontalChain(gem);
-                    if (chain !== null) {
-                        horizontalChains.push(chain);
+                    if (!gem.already_checked_horizontal) {
+                        var chain = _this.checkHorizontalChain(gem);
+                        if (chain !== null) {
+                            horizontalChains.push(chain);
+                        }
+                        gem.already_checked_horizontal = true;
                     }
-                    chain = _this.checkVerticalChain(gem);
-                    if (chain !== null) {
-                        verticalChains.push(chain);
+                    if (!gem.already_checked_vertical) {
+                        chain = _this.checkVerticalChain(gem);
+                        if (chain !== null) {
+                            verticalChains.push(chain);
+                        }
+                        gem.already_checked_vertical = true;
                     }
-                    gem.already_checked = true;
                     var adjacents = _this.getAdjacentGems(gem.column, gem.line);
                     for (var a = 0; a < adjacents.length; a++) {
                         check(adjacents[a], id);
@@ -154,6 +160,7 @@ var Grid = (function () {
         for (a = column + 1; a < size; a++) {
             gem = grid[a][line];
             if (gem && gem.id === referenceGem.id) {
+                gem.already_checked_horizontal = true;
                 countRight++;
             }
             else {
@@ -163,6 +170,7 @@ var Grid = (function () {
         for (a = column - 1; a >= 0; a--) {
             gem = grid[a][line];
             if (gem && gem.id === referenceGem.id) {
+                gem.already_checked_horizontal = true;
                 countLeft++;
             }
             else {
@@ -193,6 +201,7 @@ var Grid = (function () {
         for (a = line - 1; a >= 0; a--) {
             gem = grid[column][a];
             if (gem && gem.id === referenceGem.id) {
+                gem.already_checked_vertical = true;
                 countUp++;
             }
             else {
@@ -202,6 +211,7 @@ var Grid = (function () {
         for (a = line + 1; a < size; a++) {
             gem = grid[column][a];
             if (gem && gem.id === referenceGem.id) {
+                gem.already_checked_vertical = true;
                 countDown++;
             }
             else {
