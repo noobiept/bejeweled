@@ -9,6 +9,14 @@ enum GemType
         orange_gem
     }
 
+enum GemAction
+    {
+        move,
+        remove
+    }
+
+
+
 class Gem
 {
 static _CONTAINER: createjs.Container;
@@ -92,10 +100,11 @@ positionIn( column, line )
 moveTo( column, line, callback?: () => any )
     {
     var _this = this;
-    this.is_moving = true;
+
     var x = column * Gem.SIZE;
     var y = line * Gem.SIZE;
 
+    this.is_moving = true;
     this.column = column;
     this.line = line;
 
@@ -112,6 +121,7 @@ moveTo( column, line, callback?: () => any )
             }
         });
     }
+
 
 setSelection( value )
     {
@@ -130,6 +140,7 @@ getY()
 
 remove( callback?: () => any )
     {
+    var _this = this;
     createjs.Tween.removeTweens( this.shape );
     createjs.Tween.get( this.shape ).to(
         {
@@ -137,7 +148,7 @@ remove( callback?: () => any )
             scaleY: 0
         }, 400 ).call( function()
             {
-            Gem._CONTAINER.removeChild( this.shape );
+            Gem._CONTAINER.removeChild( _this.shape );
 
             if ( callback )
                 {

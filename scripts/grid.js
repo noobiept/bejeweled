@@ -2,6 +2,8 @@ var Grid = (function () {
     function Grid(size) {
         this.grid = [];
         this.size = size;
+        this.to_be_animated = [];
+        this.animating = false;
         for (var column = 0; column < size; column++) {
             this.grid[column] = [];
             for (var line = 0; line < size; line++) {
@@ -54,17 +56,23 @@ var Grid = (function () {
         this.grid[gem1_column][gem1_line] = gem2;
         this.grid[gem2_column][gem2_line] = gem1;
     };
-    Grid.prototype.removeGem = function (column, line) {
+    Grid.prototype.removeGem = function (column, line, callback) {
+        var _this = this;
         var gem = this.grid[column][line];
+        // update the grid first, and not at the end of the animation (so that we can queue more actions, based on the end result)
+        _this.grid[column][line] = null;
         if (gem !== null) {
-            gem.remove();
-            this.grid[column][line] = null;
+            gem.remove(callback);
         }
     };
+    Grid.prototype.moveGem = function (gem, column, line, callback) {
+        var _this = this;
+        _this.grid[column][line] = gem;
+        gem.moveTo(column, line, callback);
+    };
     Grid.prototype.clearChains = function () {
-        var aChainCleared = false;
-        while (this.checkForChains()) {
-            aChainCleared = true;
+        var aChainCleared = this.checkForChains();
+        if (!aChainCleared) {
             this.reAddGems();
         }
         return aChainCleared;
@@ -90,16 +98,27 @@ var Grid = (function () {
         var size = this.size;
         var foundChains = false;
         var removeChain = function (endColumn, endLine, count, vertical) {
+            var info = {
+                action: 1 /* remove */,
+                gems: []
+            };
             if (vertical === true) {
                 for (var line = endLine; line > endLine - count; line--) {
-                    _this.removeGem(endColumn, line);
+                    info.gems.push({
+                        column: endColumn,
+                        line: line
+                    });
                 }
             }
             else {
                 for (var column = endColumn; column > endColumn - count; column--) {
-                    _this.removeGem(column, endLine);
+                    info.gems.push({
+                        column: column,
+                        line: endLine
+                    });
                 }
             }
+            _this.addToAnimationQueue(info);
         };
         for (var column = 0; column < size; column++) {
             for (var line = 0; line < size; line++) {
@@ -237,6 +256,10 @@ var Grid = (function () {
         var size = this.size;
         var gem;
         var line;
+        var info = {
+            action: 0 /* move */,
+            gems: []
+        };
         for (var column = 0; column < size; column++) {
             var gems = [];
             for (line = 0; line < size; line++) {
@@ -249,8 +272,14 @@ var Grid = (function () {
             for (line = size - 1; line >= 0; line--) {
                 gem = gems[line - gemDiff];
                 if (gem) {
-                    gem.moveTo(column, line);
-                    this.grid[column][line] = gem;
+                    if (gem.column !== column || gem.line !== line) {
+                        info.gems.push({
+                            gem: gem,
+                            column: column,
+                            line: line
+                        });
+                        this.grid[column][line] = gem;
+                    }
                 }
                 else {
                     this.grid[column][line] = null;
@@ -260,12 +289,19 @@ var Grid = (function () {
                 if (this.grid[column][line] === null) {
                     gem = this.newRandomGem(column, line, false);
                     gem.positionIn(column, -(line + 1));
-                    gem.moveTo(column, line);
+                    info.gems.push({
+                        gem: gem,
+                        column: column,
+                        line: line
+                    });
                 }
                 else {
                     break;
                 }
             }
+        }
+        if (info.gems.length > 0) {
+            this.addToAnimationQueue(info);
         }
     };
     Grid.prototype.getAdjacentGems = function (column, line) {
@@ -283,6 +319,50 @@ var Grid = (function () {
             adjacentGems.push(this.grid[column][line + 1]);
         }
         return adjacentGems;
+    };
+    /*
+        Receives some gems, that are going to be animated when once all the other gems in the queue are dealt with
+     */
+    Grid.prototype.addToAnimationQueue = function (info) {
+        this.to_be_animated.push(info);
+        this.startAnimations();
+    };
+    /*
+        Start the next batch of animations
+     */
+    Grid.prototype.startAnimations = function () {
+        if (this.animating) {
+            return;
+        }
+        if (this.to_be_animated.length === 0) {
+            this.clearChains();
+            return;
+        }
+        var _this = this;
+        this.animating = true;
+        var info = this.to_be_animated.shift();
+        if (info.action === 0 /* move */) {
+            for (var a = 1; a < info.gems.length; a++) {
+                var gemInfo = info.gems[a];
+                _this.moveGem(gemInfo.gem, gemInfo.column, gemInfo.line);
+            }
+            var first = info.gems[0];
+            _this.moveGem(first.gem, first.column, first.line, function () {
+                _this.animating = false;
+                _this.startAnimations();
+            });
+        }
+        else if (info.action === 1 /* remove */) {
+            for (var a = 1; a < info.gems.length; a++) {
+                var gemInfo = info.gems[a];
+                _this.removeGem(gemInfo.column, gemInfo.line);
+            }
+            var first = info.gems[0];
+            _this.removeGem(first.column, first.line, function () {
+                _this.animating = false;
+                _this.startAnimations();
+            });
+        }
     };
     return Grid;
 })();

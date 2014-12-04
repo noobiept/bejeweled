@@ -1,12 +1,27 @@
+interface GridAnimationQueue
+    {
+        action: GemAction;
+        gems: {
+            column: number;
+            line: number;
+            gem?: Gem;
+        }[]
+    }
+
 class Grid
 {
 grid: Gem[][];
 size: number;
+to_be_animated: GridAnimationQueue[];
+animating: boolean;
+
 
 constructor( size: number )
     {
     this.grid = [];
     this.size = size;
+    this.to_be_animated = [];
+    this.animating = false;
 
     for (var column = 0 ; column < size ; column++)
         {
@@ -93,26 +108,39 @@ switchGems( gem1, gem2, checkIfValid= true )
     }
 
 
-removeGem( column, line )
+removeGem( column, line, callback?: () => any )
     {
+    var _this = this;
     var gem = this.grid[ column ][ line ];
+
+        // update the grid first, and not at the end of the animation (so that we can queue more actions, based on the end result)
+    _this.grid[ column ][ line ] = null;
 
     if ( gem !== null )
         {
-        gem.remove();
-
-        this.grid[ column ][ line ] = null;
+        gem.remove( callback );
         }
     }
 
 
+
+moveGem( gem, column, line, callback?: () => any )
+    {
+    var _this = this;
+
+    _this.grid[ column ][ line ] = gem;
+
+    gem.moveTo( column, line, callback );
+    }
+
+
+
 clearChains(): boolean
     {
-    var aChainCleared = false;
+    var aChainCleared = this.checkForChains();
 
-    while( this.checkForChains() )
+    if ( !aChainCleared )
         {
-        aChainCleared = true;
         this.reAddGems();
         }
 
@@ -154,11 +182,19 @@ checkForChains(): boolean
 
     var removeChain = function( endColumn, endLine, count, vertical: boolean )
         {
+        var info = {
+                action: GemAction.remove,
+                gems: []
+            };
+
         if ( vertical === true )
             {
             for (var line = endLine ; line > endLine - count ; line--)
                 {
-                _this.removeGem( endColumn, line );
+                info.gems.push({
+                        column: endColumn,
+                        line: line
+                    });
                 }
             }
 
@@ -166,9 +202,14 @@ checkForChains(): boolean
             {
             for (var column = endColumn ; column > endColumn - count ; column--)
                 {
-                _this.removeGem( column, endLine );
+                info.gems.push({
+                        column: column,
+                        line: endLine
+                    });
                 }
             }
+
+        _this.addToAnimationQueue( info );
         };
 
 
@@ -386,6 +427,10 @@ reAddGems()
     var size = this.size;
     var gem: Gem;
     var line;
+    var info = {
+            action: GemAction.move,
+            gems: []
+        };
 
     for (var column = 0 ; column < size ; column++)
         {
@@ -411,9 +456,17 @@ reAddGems()
 
             if ( gem )
                 {
-                gem.moveTo( column, line );
+                if ( gem.column !== column || gem.line !== line )
+                    {
+                    info.gems.push({
+                            gem: gem,
+                            column: column,
+                            line: line
+                        });
 
-                this.grid[ column ][ line ] = gem;
+                    this.grid[ column ][ line ] = gem;
+                    }
+
                 }
 
             else
@@ -431,7 +484,11 @@ reAddGems()
                 gem = this.newRandomGem( column, line, false );
 
                 gem.positionIn( column, -(line + 1) );
-                gem.moveTo( column, line );
+                info.gems.push({
+                        gem: gem,
+                        column: column,
+                        line: line
+                    });
                 }
 
             else
@@ -439,6 +496,11 @@ reAddGems()
                 break;
                 }
             }
+        }
+
+    if ( info.gems.length > 0 )
+        {
+        this.addToAnimationQueue( info );
         }
     }
 
@@ -468,5 +530,76 @@ getAdjacentGems( column, line )
         }
 
     return adjacentGems;
+    }
+
+
+/*
+    Receives some gems, that are going to be animated when once all the other gems in the queue are dealt with
+ */
+
+addToAnimationQueue( info: GridAnimationQueue )
+    {
+    this.to_be_animated.push( info );
+
+    this.startAnimations();
+    }
+
+/*
+    Start the next batch of animations
+ */
+
+startAnimations()
+    {
+    if ( this.animating )
+        {
+        return;
+        }
+
+    if ( this.to_be_animated.length === 0 )
+        {
+        this.clearChains();
+        return;
+        }
+
+    var _this = this;
+    this.animating = true;
+
+    var info = this.to_be_animated.shift();
+
+    if ( info.action === GemAction.move )
+        {
+        for (var a = 1 ; a < info.gems.length ; a++)
+            {
+            var gemInfo = info.gems[ a ];
+
+            _this.moveGem( gemInfo.gem, gemInfo.column, gemInfo.line );
+            }
+
+        var first = info.gems[ 0 ];
+
+        _this.moveGem( first.gem, first.column, first.line, function()
+            {
+            _this.animating = false;
+            _this.startAnimations();
+            });
+        }
+
+    else if ( info.action === GemAction.remove )
+        {
+        for (var a = 1 ; a < info.gems.length ; a++)
+            {
+            var gemInfo = info.gems[ a ];
+
+            _this.removeGem( gemInfo.column, gemInfo.line );
+            }
+
+        var first = info.gems[ 0 ];
+
+        _this.removeGem( first.column, first.line, function()
+            {
+            _this.animating = false;
+            _this.startAnimations();
+            })
+        }
     }
 }

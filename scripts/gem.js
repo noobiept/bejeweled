@@ -8,6 +8,11 @@ var GemType;
     GemType[GemType["red_gem"] = 5] = "red_gem";
     GemType[GemType["orange_gem"] = 6] = "orange_gem";
 })(GemType || (GemType = {}));
+var GemAction;
+(function (GemAction) {
+    GemAction[GemAction["move"] = 0] = "move";
+    GemAction[GemAction["remove"] = 1] = "remove";
+})(GemAction || (GemAction = {}));
 var Gem = (function () {
     function Gem(id) {
         var _this = this;
@@ -52,9 +57,9 @@ var Gem = (function () {
     };
     Gem.prototype.moveTo = function (column, line, callback) {
         var _this = this;
-        this.is_moving = true;
         var x = column * Gem.SIZE;
         var y = line * Gem.SIZE;
+        this.is_moving = true;
         this.column = column;
         this.line = line;
         createjs.Tween.get(this.shape, { override: true }).to({
@@ -77,12 +82,13 @@ var Gem = (function () {
         return this.shape.y;
     };
     Gem.prototype.remove = function (callback) {
+        var _this = this;
         createjs.Tween.removeTweens(this.shape);
         createjs.Tween.get(this.shape).to({
             scaleX: 0,
             scaleY: 0
         }, 400).call(function () {
-            Gem._CONTAINER.removeChild(this.shape);
+            Gem._CONTAINER.removeChild(_this.shape);
             if (callback) {
                 callback();
             }
