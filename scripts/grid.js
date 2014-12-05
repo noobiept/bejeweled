@@ -97,11 +97,11 @@ var Grid = (function () {
         var grid = this.grid;
         var size = this.size;
         var foundChains = false;
+        var info = {
+            action: 1 /* remove */,
+            gems: []
+        };
         var removeChain = function (endColumn, endLine, count, vertical) {
-            var info = {
-                action: 1 /* remove */,
-                gems: []
-            };
             if (vertical === true) {
                 for (var line = endLine; line > endLine - count; line--) {
                     info.gems.push({
@@ -118,7 +118,6 @@ var Grid = (function () {
                     });
                 }
             }
-            _this.addToAnimationQueue(info);
         };
         for (var column = 0; column < size; column++) {
             for (var line = 0; line < size; line++) {
@@ -163,6 +162,9 @@ var Grid = (function () {
                     removeChain(chain.column, chain.line + chain.size - 1, chain.size, true);
                 }
             }
+        }
+        if (info.gems.length > 0) {
+            _this.addToAnimationQueue(info);
         }
         this.clearGemFlags();
         return foundChains;

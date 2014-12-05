@@ -179,14 +179,13 @@ checkForChains(): boolean
     var grid = this.grid;
     var size = this.size;
     var foundChains = false;
+    var info = {
+            action: GemAction.remove,
+            gems: []
+        };
 
     var removeChain = function( endColumn, endLine, count, vertical: boolean )
         {
-        var info = {
-                action: GemAction.remove,
-                gems: []
-            };
-
         if ( vertical === true )
             {
             for (var line = endLine ; line > endLine - count ; line--)
@@ -208,8 +207,6 @@ checkForChains(): boolean
                     });
                 }
             }
-
-        _this.addToAnimationQueue( info );
         };
 
 
@@ -286,6 +283,11 @@ checkForChains(): boolean
             }
         }
 
+
+    if ( info.gems.length > 0 )
+        {
+        _this.addToAnimationQueue( info );
+        }
 
     this.clearGemFlags();
 
