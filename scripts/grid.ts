@@ -619,4 +619,13 @@ startAnimations()
             })
         }
     }
+
+
+static toCanvasPosition( column, line )
+    {
+    return {
+            x: column * Gem.SIZE + Gem.SIZE / 2,
+            y: line   * Gem.SIZE + Gem.SIZE / 2
+        };
+    }
 }

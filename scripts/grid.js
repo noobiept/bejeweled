@@ -377,5 +377,11 @@ var Grid = (function () {
             });
         }
     };
+    Grid.toCanvasPosition = function (column, line) {
+        return {
+            x: column * Gem.SIZE + Gem.SIZE / 2,
+            y: line * Gem.SIZE + Gem.SIZE / 2
+        };
+    };
     return Grid;
 })();

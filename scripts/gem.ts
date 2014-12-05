@@ -62,6 +62,8 @@ constructor( id: GemType )
     g.drawRect( 0, 0, Gem.SIZE, Gem.SIZE );
     g.endFill();
 
+    shape.regX = Gem.SIZE / 2;
+    shape.regY = Gem.SIZE / 2;
     shape.hitArea = hitArea;
     shape.on( 'click', function()
         {
@@ -92,8 +94,10 @@ positionIn( column, line )
     this.column = column;
     this.line = line;
 
-    this.shape.x = column * Gem.SIZE;
-    this.shape.y = line * Gem.SIZE;
+    var canvasPosition = Grid.toCanvasPosition( column, line );
+
+    this.shape.x = canvasPosition.x;
+    this.shape.y = canvasPosition.y;
     }
 
 
@@ -101,16 +105,15 @@ moveTo( column, line, callback?: () => any )
     {
     var _this = this;
 
-    var x = column * Gem.SIZE;
-    var y = line * Gem.SIZE;
+    var canvasPosition = Grid.toCanvasPosition( column, line );
 
     this.is_moving = true;
     this.column = column;
     this.line = line;
 
     createjs.Tween.get( this.shape, { override: true } ).to({
-            x: x,
-            y: y
+            x: canvasPosition.x,
+            y: canvasPosition.y
         }, 500 ).call( function()
         {
         _this.is_moving = false;
@@ -141,7 +144,7 @@ getY()
 remove( callback?: () => any )
     {
     var _this = this;
-    createjs.Tween.removeTweens( this.shape );
+
     createjs.Tween.get( this.shape ).to(
         {
             scaleX: 0,
