@@ -32,29 +32,42 @@ var Grid = (function () {
         }
         return false;
     };
-    Grid.prototype.switchGems = function (gem1, gem2, checkIfValid) {
-        if (checkIfValid === void 0) { checkIfValid = true; }
-        var _this = this;
+    Grid.prototype.switchGems = function (gem1, gem2) {
         // get the gem position before moving it (so we can then move the selected gem to this position)
         var gem1_column = gem1.column;
         var gem1_line = gem1.line;
         var gem2_column = gem2.column;
         var gem2_line = gem2.line;
-        gem1.moveTo(gem2_column, gem2_line);
-        gem2.moveTo(gem1_column, gem1_line, function () {
-            if (checkIfValid) {
-                // if a chain wasn't cleared, means we need to move undo the switch
-                if (!_this.clearChains()) {
-                    _this.switchGems(gem1, gem2, false);
-                }
-            }
-        });
+        // switch the gems, and check if it leads to a chain
         gem1.column = gem2_column;
         gem1.line = gem2_line;
         gem2.column = gem1_column;
         gem2.line = gem1_line;
         this.grid[gem1_column][gem1_line] = gem2;
         this.grid[gem2_column][gem2_line] = gem1;
+        this.addToAnimationQueue({
+            action: 0 /* move */,
+            gems: [
+                { gem: gem1, column: gem2_column, line: gem2_line },
+                { gem: gem2, column: gem1_column, line: gem1_line }
+            ]
+        });
+        // if it doesn't lead to a chain, we need to move it back
+        if (this.checkHorizontalChain(gem1_column, gem1_line) === null && this.checkVerticalChain(gem1_column, gem1_line) === null && this.checkHorizontalChain(gem2_column, gem2_line) === null && this.checkVerticalChain(gem2_column, gem2_line) === null) {
+            gem1.column = gem1_column;
+            gem1.line = gem1_line;
+            gem2.column = gem2_column;
+            gem2.line = gem2_line;
+            this.grid[gem1_column][gem1_line] = gem1;
+            this.grid[gem2_column][gem2_line] = gem2;
+            this.addToAnimationQueue({
+                action: 0 /* move */,
+                gems: [
+                    { gem: gem1, column: gem1_column, line: gem1_line },
+                    { gem: gem2, column: gem2_column, line: gem2_line }
+                ]
+            });
+        }
     };
     Grid.prototype.removeGem = function (column, line, callback) {
         var _this = this;
@@ -132,14 +145,14 @@ var Grid = (function () {
                         return;
                     }
                     if (!gem.already_checked_horizontal) {
-                        var chain = _this.checkHorizontalChain(gem);
+                        var chain = _this.checkHorizontalChain(gem.column, gem.line);
                         if (chain !== null) {
                             horizontalChains.push(chain);
                         }
                         gem.already_checked_horizontal = true;
                     }
                     if (!gem.already_checked_vertical) {
-                        chain = _this.checkVerticalChain(gem);
+                        chain = _this.checkVerticalChain(gem.column, gem.line);
                         if (chain !== null) {
                             verticalChains.push(chain);
                         }
@@ -169,13 +182,12 @@ var Grid = (function () {
         this.clearGemFlags();
         return foundChains;
     };
-    Grid.prototype.checkHorizontalChain = function (referenceGem) {
+    Grid.prototype.checkHorizontalChain = function (column, line) {
         var size = this.size;
         var grid = this.grid;
         var countLeft = 0;
         var countRight = 0;
-        var column = referenceGem.column;
-        var line = referenceGem.line;
+        var referenceGem = grid[column][line];
         var a;
         var gem;
         for (a = column + 1; a < size; a++) {
@@ -210,13 +222,12 @@ var Grid = (function () {
             return null;
         }
     };
-    Grid.prototype.checkVerticalChain = function (referenceGem) {
+    Grid.prototype.checkVerticalChain = function (column, line) {
         var size = this.size;
         var grid = this.grid;
         var countUp = 0;
         var countDown = 0;
-        var column = referenceGem.column;
-        var line = referenceGem.line;
+        var referenceGem = this.grid[column][line];
         var a;
         var gem;
         for (a = line - 1; a >= 0; a--) {
