@@ -241,6 +241,9 @@ checkForChains(): boolean
             var horizontalChains = [];
             var verticalChains = [];
 
+                // search for gem chains
+                // uses a flood fill algorithm, to determine the connected chains (of the same id as the starting gem)
+                // we have two flags for horizontal and vertical orientation, to know if we already checked the gem
             var check = function( gem, id )
                 {
                 if ( !gem ||
@@ -465,6 +468,7 @@ reAddGems()
             }
 
         var gemDiff = size - gems.length;
+        var gapCount = 0;
 
             // move all the gems to the bottom (all the gaps on top)
         for (line = size - 1 ; line >= 0 ; line--)
@@ -488,6 +492,7 @@ reAddGems()
 
             else
                 {
+                gapCount++;
                 this.grid[ column ][ line ] = null;
                 }
             }
@@ -500,7 +505,7 @@ reAddGems()
                 {
                 gem = this.newRandomGem( column, line, false );
 
-                gem.positionIn( column, -(line + 1) );
+                gem.positionIn( column, -(gapCount - line) );
                 info.gems.push({
                         gem: gem,
                         column: column,

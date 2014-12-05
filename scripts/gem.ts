@@ -21,6 +21,7 @@ class Gem
 {
 static _CONTAINER: createjs.Container;
 static SIZE = 50;
+static MOVEMENT_SPEED = 300;
 
     // GemType is a enum, which will have as key the gem's id, plus the associated position (so we need to divide by 2)
 static TYPE_COUNT = Object.keys( GemType ).length / 2;
@@ -106,15 +107,39 @@ moveTo( column, line, callback?: () => any )
     var _this = this;
 
     var canvasPosition = Grid.toCanvasPosition( column, line );
+    var distanceY = Math.abs( this.line - line ) * Gem.SIZE;
+    var distanceX = Math.abs( this.column - column ) * Gem.SIZE;
+    var distance;
+
+        // moving up/down
+        // can only move horizontally or vertically
+    if ( distanceY > distanceX )
+        {
+        distance = distanceY;
+        }
+
+        // moving left/right
+    else
+        {
+        distance = distanceX;
+        }
+
+    if ( distance < Gem.SIZE )
+        {
+        distance = Gem.SIZE;
+        }
+
 
     this.is_moving = true;
     this.column = column;
     this.line = line;
 
+    var duration = distance / Gem.MOVEMENT_SPEED * 1000;
+
     createjs.Tween.get( this.shape, { override: true } ).to({
             x: canvasPosition.x,
             y: canvasPosition.y
-        }, 500 ).call( function()
+        }, duration ).call( function()
         {
         _this.is_moving = false;
 
