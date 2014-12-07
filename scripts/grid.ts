@@ -158,7 +158,13 @@ clearChains(): boolean
 
     if ( !aChainCleared )
         {
-        this.reAddGems();
+        if ( !this.reAddGems() )
+            {
+            if ( !this.isThereMoreValidMoves() )
+                {
+                console.log( 'No more valid moves!' );
+                }
+            }
         }
 
     return aChainCleared;
@@ -442,7 +448,7 @@ checkVerticalChain( column, line )
     Existing gems fall down (so that all the gaps are on top), and then add new gems on top.
  */
 
-reAddGems()
+reAddGems(): boolean
     {
     var size = this.size;
     var gem: Gem;
@@ -523,7 +529,10 @@ reAddGems()
     if ( info.gems.length > 0 )
         {
         this.addToAnimationQueue( info );
+        return true;
         }
+
+    return false;
     }
 
 
@@ -632,5 +641,122 @@ static toCanvasPosition( column, line )
             x: column * Gem.SIZE + Gem.SIZE / 2,
             y: line   * Gem.SIZE + Gem.SIZE / 2
         };
+    }
+
+/*
+    Cases where there's still a valid gem chain
+    (the _x is the reference gem)
+
+    _x xx | _xx x |    x | _xx  | _x   |   xx | _x x |   x
+          |       | _xx  |    x |   xx | _x   |   x  | _x x
+
+    _x | _x | _x  |  _x | _x  |  _x | _x  |  _x
+     x |    |  x  |   x |   x |  x  |   x |  x
+       |  x |   x |  x  |   x |  x  |  x  |   x
+     x |  x |     |     |     |     |     |
+ */
+
+isThereMoreValidMoves(): boolean
+    {
+    var moves = [   //HERE make this static
+            [
+                { columnOffset: 2, lineOffset: 0 },
+                { columnOffset: 3, lineOffset: 0 }
+            ],
+            [
+                { columnOffset: 1, lineOffset: 0 },
+                { columnOffset: 3, lineOffset: 0 }
+            ],
+            [
+                { columnOffset: 1, lineOffset: 0 },
+                { columnOffset: 2, lineOffset: -1 }
+            ],
+            [
+                { columnOffset: 1, lineOffset: 0 },
+                { columnOffset: 2, lineOffset: 1 }
+            ],
+            [
+                { columnOffset: 1, lineOffset: 1 },
+                { columnOffset: 2, lineOffset: 1 }
+            ],
+            [
+                { columnOffset: 1, lineOffset: -1 },
+                { columnOffset: 2, lineOffset: -1 }
+            ],
+            [
+                { columnOffset: 1, lineOffset: 1 },
+                { columnOffset: 2, lineOffset: 0 }
+            ],
+            [
+                { columnOffset: 1, lineOffset: -1 },
+                { columnOffset: 2, lineOffset: 0 }
+            ],
+            [
+                { columnOffset: 0, lineOffset: 1 },
+                { columnOffset: 0, lineOffset: 3 }
+            ],
+            [
+                { columnOffset: 0, lineOffset: 2 },
+                { columnOffset: 0, lineOffset: 3 }
+            ],
+            [
+                { columnOffset: 0, lineOffset: 1 },
+                { columnOffset: 1, lineOffset: 2 }
+            ],
+            [
+                { columnOffset: 0, lineOffset: 1 },
+                { columnOffset: -1, lineOffset: 2 }
+            ],
+            [
+                { columnOffset: 1, lineOffset: 1 },
+                { columnOffset: 1, lineOffset: 2 }
+            ],
+            [
+                { columnOffset: -1, lineOffset: 1 },
+                { columnOffset: -1, lineOffset: 2 }
+            ],
+            [
+                { columnOffset: 1, lineOffset: 1 },
+                { columnOffset: 0, lineOffset: 2 }
+            ],
+            [
+                { columnOffset: -1, lineOffset: 1 },
+                { columnOffset: 0, lineOffset: 2 }
+            ]
+        ];
+        
+        // loop here over the moves, for each gem
+    var size = this.size;
+    var grid = this.grid;
+    var movesSize = moves.length;
+
+    for (var column = 0 ; column < size ; column++)
+        {
+        for (var line = 0 ; line < size ; line++)
+            {
+            var gem = grid[ column ][ line ];
+            var gemId = gem.id;
+
+            for (var a = 0 ; a < movesSize ; a++)
+                {
+                var move = moves[ a ];
+                var one = move[ 0 ];
+                var two = move[ 1 ];
+                var oneColumn = column + one.columnOffset;
+                var oneLine = line + one.lineOffset;
+                var twoColumn = column + two.columnOffset;
+                var twoLine = line + two.lineOffset;
+
+
+                if ( (grid[ oneColumn ] && grid[ oneColumn ][ oneLine ] && grid[ oneColumn ][ oneLine ].id === gemId) &&
+                     (grid[ twoColumn ] && grid[ twoColumn ][ twoLine ] && grid[ twoColumn ][ twoLine ].id === gemId) )
+                    {
+                    return true;
+                    }
+                }
+            }
+        }
+
+    return false;
     }
 }
