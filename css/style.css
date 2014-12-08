@@ -14,3 +14,20 @@ ul
     {
     visibility: hidden;
     }
+
+#GameMenu ul > *
+    {
+    display: inline-block;
+    padding: 0 10px;
+    }
+
+.button
+    {
+    cursor: pointer;
+    }
+
+.button:hover
+    {
+    background-color: #ceb19e;
+    }
+

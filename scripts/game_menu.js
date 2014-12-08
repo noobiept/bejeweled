@@ -8,7 +8,7 @@ var GameMenu;
         // restart //
         var restart = container.querySelector('#Restart');
         restart.onclick = function () {
-            //HERE
+            Game.restart();
         };
         // score //
         SCORE = container.querySelector('#Score');

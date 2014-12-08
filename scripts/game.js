@@ -3,17 +3,20 @@ var Game;
     var GRID;
     var SELECTED = null;
     var SCORE = 0;
-    function start() {
-        var gridSize = 8;
-        G.CANVAS.width = gridSize * Gem.SIZE;
-        G.CANVAS.height = gridSize * Gem.SIZE;
-        GRID = new Grid(gridSize);
-        GameMenu.startTimer(40);
-        GameMenu.updateScore(SCORE);
-        GameMenu.show();
+    var GRID_SIZE = 8;
+    function init() {
+        G.CANVAS.width = GRID_SIZE * Gem.SIZE;
+        G.CANVAS.height = GRID_SIZE * Gem.SIZE;
         createjs.Ticker.on('tick', function (event) {
             G.STAGE.update();
         });
+    }
+    Game.init = init;
+    function start() {
+        GRID = new Grid(GRID_SIZE);
+        GameMenu.startTimer(40);
+        GameMenu.updateScore(SCORE);
+        GameMenu.show();
     }
     Game.start = start;
     function gemClicked(gem) {
@@ -48,4 +51,11 @@ var Game;
         GameMenu.updateScore(SCORE);
     }
     Game.addToScore = addToScore;
+    function restart() {
+        GRID.clear();
+        GRID = null;
+        SCORE = 0;
+        Game.start();
+    }
+    Game.restart = restart;
 })(Game || (Game = {}));

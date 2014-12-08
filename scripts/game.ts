@@ -3,24 +3,27 @@ module Game
 var GRID: Grid;
 var SELECTED: Gem = null;
 var SCORE = 0;
+var GRID_SIZE = 8;
 
-export function start()
+export function init()
     {
-    var gridSize = 8;
-
-    G.CANVAS.width = gridSize * Gem.SIZE;
-    G.CANVAS.height = gridSize * Gem.SIZE;
-
-    GRID = new Grid( gridSize );
-
-    GameMenu.startTimer( 40 );
-    GameMenu.updateScore( SCORE );
-    GameMenu.show();
+    G.CANVAS.width = GRID_SIZE * Gem.SIZE;
+    G.CANVAS.height = GRID_SIZE * Gem.SIZE;
 
     createjs.Ticker.on( 'tick', function( event )
         {
         G.STAGE.update();
         });
+    }
+
+
+export function start()
+    {
+    GRID = new Grid( GRID_SIZE );
+
+    GameMenu.startTimer( 40 );
+    GameMenu.updateScore( SCORE );
+    GameMenu.show();
     }
 
 
@@ -71,5 +74,16 @@ export function addToScore( score )
     SCORE += score;
 
     GameMenu.updateScore( SCORE );
+    }
+
+
+export function restart()
+    {
+    GRID.clear();
+    GRID = null;
+
+    SCORE = 0;
+
+    Game.start();
     }
 }

@@ -13,7 +13,7 @@ export function init()
 
     restart.onclick = function()
         {
-            //HERE
+        Game.restart();
         };
 
         // score //

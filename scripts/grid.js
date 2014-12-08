@@ -4,6 +4,7 @@ var Grid = (function () {
         this.size = size;
         this.to_be_animated = [];
         this.animating = false;
+        this.clearing = false;
         for (var column = 0; column < size; column++) {
             this.grid[column] = [];
             for (var line = 0; line < size; line++) {
@@ -84,6 +85,9 @@ var Grid = (function () {
         gem.moveTo(column, line, callback);
     };
     Grid.prototype.clearChains = function () {
+        if (this.clearing) {
+            return false;
+        }
         var aChainCleared = this.checkForChains();
         if (!aChainCleared) {
             if (!this.reAddGems()) {
@@ -499,6 +503,10 @@ var Grid = (function () {
             }
         }
         return false;
+    };
+    Grid.prototype.clear = function () {
+        this.clearing = true;
+        Gem._CONTAINER.removeAllChildren();
     };
     return Grid;
 })();

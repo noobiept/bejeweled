@@ -52,6 +52,7 @@ var manifest = {
 
 G.PRELOAD.on( 'complete', function( event )
     {
+    Game.init();
     Game.start();
     });
 G.PRELOAD.loadManifest( manifest, true );

@@ -14,6 +14,7 @@ grid: Gem[][];
 size: number;
 to_be_animated: GridAnimationQueue[];
 animating: boolean;
+clearing: boolean;
 
 
 constructor( size: number )
@@ -22,6 +23,7 @@ constructor( size: number )
     this.size = size;
     this.to_be_animated = [];
     this.animating = false;
+    this.clearing = false;
 
     for (var column = 0 ; column < size ; column++)
         {
@@ -154,6 +156,11 @@ moveGem( gem, column, line, callback?: () => any )
 
 clearChains(): boolean
     {
+    if ( this.clearing )
+        {
+        return false;
+        }
+
     var aChainCleared = this.checkForChains();
 
     if ( !aChainCleared )
@@ -763,5 +770,13 @@ isThereMoreValidMoves(): boolean
         }
 
     return false;
+    }
+
+
+clear()
+    {
+    this.clearing = true;
+
+    Gem._CONTAINER.removeAllChildren();
     }
 }
