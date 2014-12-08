@@ -2,12 +2,20 @@ module Game
 {
 var GRID: Grid;
 var SELECTED: Gem = null;
-
+var SCORE = 0;
 
 export function start()
     {
-    GRID = new Grid( 8 );
+    var gridSize = 8;
 
+    G.CANVAS.width = gridSize * Gem.SIZE;
+    G.CANVAS.height = gridSize * Gem.SIZE;
+
+    GRID = new Grid( gridSize );
+
+    GameMenu.startTimer( 40 );
+    GameMenu.updateScore( SCORE );
+    GameMenu.show();
 
     createjs.Ticker.on( 'tick', function( event )
         {
@@ -55,5 +63,13 @@ export function gemClicked( gem: Gem )
                 }
             }
         }
+    }
+
+
+export function addToScore( score )
+    {
+    SCORE += score;
+
+    GameMenu.updateScore( SCORE );
     }
 }

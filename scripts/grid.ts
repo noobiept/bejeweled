@@ -617,6 +617,11 @@ startAnimations()
 
     else if ( info.action === GemAction.remove )
         {
+        var gemChain = info.gems.length;
+
+        Game.addToScore( gemChain * 10 );
+        GameMenu.addToTimer( gemChain );
+
         for (var a = 1 ; a < info.gems.length ; a++)
             {
             var gemInfo = info.gems[ a ];

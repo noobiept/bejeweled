@@ -377,6 +377,9 @@ var Grid = (function () {
             });
         }
         else if (info.action === 1 /* remove */) {
+            var gemChain = info.gems.length;
+            Game.addToScore(gemChain * 10);
+            GameMenu.addToTimer(gemChain);
             for (var a = 1; a < info.gems.length; a++) {
                 var gemInfo = info.gems[a];
                 _this.removeGem(gemInfo.column, gemInfo.line);

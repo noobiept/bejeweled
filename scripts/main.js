@@ -1,8 +1,9 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../typings/utilities-1.2.d.ts" />
+/// <reference path="../typings/utilities-1.4.d.ts" />
 /// <reference path="gem.ts" />
 /// <reference path="grid.ts" />
 /// <reference path="game.ts" />
+/// <reference path="game_menu.ts" />
 var G = {
     CANVAS: null,
     STAGE: null,
@@ -19,6 +20,7 @@ window.onload = function () {
     G.CANVAS.height = height;
     // init of the game parts
     Gem.init(G.STAGE);
+    GameMenu.init();
     // preload part
     G.PRELOAD = new createjs.LoadQueue();
     var manifest = {

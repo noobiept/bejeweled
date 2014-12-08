@@ -2,8 +2,15 @@ var Game;
 (function (Game) {
     var GRID;
     var SELECTED = null;
+    var SCORE = 0;
     function start() {
-        GRID = new Grid(8);
+        var gridSize = 8;
+        G.CANVAS.width = gridSize * Gem.SIZE;
+        G.CANVAS.height = gridSize * Gem.SIZE;
+        GRID = new Grid(gridSize);
+        GameMenu.startTimer(40);
+        GameMenu.updateScore(SCORE);
+        GameMenu.show();
         createjs.Ticker.on('tick', function (event) {
             G.STAGE.update();
         });
@@ -36,4 +43,9 @@ var Game;
         }
     }
     Game.gemClicked = gemClicked;
+    function addToScore(score) {
+        SCORE += score;
+        GameMenu.updateScore(SCORE);
+    }
+    Game.addToScore = addToScore;
 })(Game || (Game = {}));
