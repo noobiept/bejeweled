@@ -14,7 +14,7 @@ var Game;
     Game.init = init;
     function start() {
         GRID = new Grid(GRID_SIZE);
-        GameMenu.startTimer(40);
+        GameMenu.startTimer(30);
         GameMenu.updateScore(SCORE);
         GameMenu.show();
     }
@@ -51,10 +51,15 @@ var Game;
         GameMenu.updateScore(SCORE);
     }
     Game.addToScore = addToScore;
+    function getScore() {
+        return SCORE;
+    }
+    Game.getScore = getScore;
     function restart() {
         GRID.clear();
         GRID = null;
         SCORE = 0;
+        Message.hide();
         Game.start();
     }
     Game.restart = restart;

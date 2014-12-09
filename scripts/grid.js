@@ -92,7 +92,10 @@ var Grid = (function () {
         if (!aChainCleared) {
             if (!this.reAddGems()) {
                 if (!this.isThereMoreValidMoves()) {
-                    console.log('No more valid moves!');
+                    var score = Game.getScore();
+                    Message.show('No more valid moves!\nScore: ' + score, 2000, function () {
+                        Game.restart();
+                    });
                 }
             }
         }

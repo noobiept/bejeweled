@@ -50,8 +50,12 @@ export function startTimer( startTime )
     {
     TIMER.start( startTime * 1000, 0, function()
         {
-            //HERE
-        console.log( 'No time left!' );
+        var score = Game.getScore();
+
+        Message.show( 'No time left!\nScore: ' + score, 2000, function()
+            {
+            Game.restart();
+            });
         }, true );
     }
 
