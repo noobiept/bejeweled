@@ -5,6 +5,7 @@
 /// <reference path="game.ts" />
 /// <reference path="game_menu.ts" />
 /// <reference path="message.ts" />
+/// <reference path="high_score.ts" />
 
 var G = {
     CANVAS: null,
@@ -27,6 +28,7 @@ Game.init();
 Gem.init( G.STAGE );
 Message.init( G.STAGE );
 GameMenu.init();
+HighScore.init();
 
 
     // preload part

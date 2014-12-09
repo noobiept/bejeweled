@@ -33,6 +33,7 @@ var GameMenu;
     function startTimer(startTime) {
         TIMER.start(startTime * 1000, 0, function () {
             var score = Game.getScore();
+            HighScore.add(score);
             Message.show('No time left!\nScore: ' + score, 2000, function () {
                 Game.restart();
             });

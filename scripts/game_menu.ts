@@ -52,6 +52,8 @@ export function startTimer( startTime )
         {
         var score = Game.getScore();
 
+        HighScore.add( score );
+
         Message.show( 'No time left!\nScore: ' + score, 2000, function()
             {
             Game.restart();

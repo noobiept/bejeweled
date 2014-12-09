@@ -171,6 +171,8 @@ clearChains(): boolean
                 {
                 var score = Game.getScore();
 
+                HighScore.add( score );
+
                 Message.show( 'No more valid moves!\nScore: ' + score, 2000, function()
                     {
                     Game.restart();
