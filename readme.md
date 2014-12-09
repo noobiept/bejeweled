@@ -1,3 +1,9 @@
+Bejeweled
+=========
+
+[Try it out here](http://nbpt.eu/games/bejeweled/)
+
+
 Objective
 =========
 
