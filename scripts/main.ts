@@ -13,7 +13,7 @@ var G = {
     PRELOAD: null
 };
 
-var BASE_PATH = '';
+var BASE_URL = '';
 
 
 window.onload = function()
@@ -35,7 +35,7 @@ HighScore.init();
 G.PRELOAD = new createjs.LoadQueue();
 
 var manifest = {
-        path: BASE_PATH + 'images/',
+        path: BASE_URL + 'images/',
         manifest: [
             { id: 'gem_selected', src: 'gem_selected.png' },
 

@@ -1,3 +1,11 @@
+Objective
+=========
+
+- Swap one gem for another adjacent, to form an horizontal or vertical chain of three or more gems of the same color.
+- The chained gems disappear and new ones are added.
+- Game is over when there's no more possible moves, or the time runs out.
+
+
 Images
 ======
 
