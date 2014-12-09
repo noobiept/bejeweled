@@ -43,6 +43,7 @@ is_moving: boolean;
 id: GemType;
 already_checked_horizontal: boolean;
 already_checked_vertical: boolean;
+being_worked_on: boolean;
 
 constructor( id: GemType )
     {
@@ -68,7 +69,7 @@ constructor( id: GemType )
     shape.hitArea = hitArea;
     shape.on( 'click', function()
         {
-        if ( !_this.is_moving )
+        if ( !_this.is_moving && !_this.being_worked_on )
             {
             Game.gemClicked( _this );
             }
@@ -88,6 +89,7 @@ constructor( id: GemType )
     this.id = id;
     this.already_checked_horizontal = false;
     this.already_checked_vertical = false;
+    this.being_worked_on = false;
     }
 
 positionIn( column, line )
@@ -142,6 +144,7 @@ moveTo( column, line, callback?: () => any )
         }, duration ).call( function()
         {
         _this.is_moving = false;
+        _this.being_worked_on = false;
 
         if ( callback )
             {

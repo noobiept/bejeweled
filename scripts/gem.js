@@ -30,7 +30,7 @@ var Gem = (function () {
         shape.regY = Gem.SIZE / 2;
         shape.hitArea = hitArea;
         shape.on('click', function () {
-            if (!_this.is_moving) {
+            if (!_this.is_moving && !_this.being_worked_on) {
                 Game.gemClicked(_this);
             }
         });
@@ -46,6 +46,7 @@ var Gem = (function () {
         this.id = id;
         this.already_checked_horizontal = false;
         this.already_checked_vertical = false;
+        this.being_worked_on = false;
     }
     Gem.init = function (stage) {
         Gem._CONTAINER = new createjs.Container();
@@ -84,6 +85,7 @@ var Gem = (function () {
             y: canvasPosition.y
         }, duration).call(function () {
             _this.is_moving = false;
+            _this.being_worked_on = false;
             if (callback) {
                 callback();
             }

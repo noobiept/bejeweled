@@ -8,7 +8,8 @@ var Grid = (function () {
         for (var column = 0; column < size; column++) {
             this.grid[column] = [];
             for (var line = 0; line < size; line++) {
-                this.newRandomGem(column, line, true);
+                var gem = this.newRandomGem(column, line, true);
+                this.grid[column][line] = gem;
             }
         }
         this.clearChains();
@@ -19,7 +20,6 @@ var Grid = (function () {
         if (positionGem === true) {
             gem.positionIn(column, line);
         }
-        this.grid[column][line] = gem;
         return gem;
     };
     /*
@@ -127,7 +127,8 @@ var Grid = (function () {
                 for (var line = endLine; line > endLine - count; line--) {
                     info.gems.push({
                         column: endColumn,
-                        line: line
+                        line: line,
+                        gem: grid[endColumn][line]
                     });
                 }
             }
@@ -135,7 +136,8 @@ var Grid = (function () {
                 for (var column = endColumn; column > endColumn - count; column--) {
                     info.gems.push({
                         column: column,
-                        line: endLine
+                        line: endLine,
+                        gem: grid[column][endLine]
                     });
                 }
             }
@@ -353,6 +355,9 @@ var Grid = (function () {
      */
     Grid.prototype.addToAnimationQueue = function (info) {
         this.to_be_animated.push(info);
+        for (var a = 0, length = info.gems.length; a < length; a++) {
+            info.gems[a].gem.being_worked_on = true;
+        }
         this.startAnimations();
     };
     /*

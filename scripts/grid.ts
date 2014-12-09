@@ -4,7 +4,7 @@ interface GridAnimationQueue
         gems: {
             column: number;
             line: number;
-            gem?: Gem;
+            gem: Gem;
         }[]
     }
 
@@ -31,7 +31,9 @@ constructor( size: number )
 
         for (var line = 0 ; line < size ; line++)
             {
-            this.newRandomGem( column, line, true );
+            var gem = this.newRandomGem( column, line, true );
+
+            this.grid[ column ][ line ] = gem;
             }
         }
 
@@ -49,8 +51,6 @@ newRandomGem( column: number, line: number, positionGem: boolean )
         {
         gem.positionIn( column, line );
         }
-
-    this.grid[ column ][ line ] = gem;
 
     return gem;
     }
@@ -222,7 +222,8 @@ checkForChains(): boolean
                 {
                 info.gems.push({
                         column: endColumn,
-                        line: line
+                        line: line,
+                        gem: grid[ endColumn ][ line ]
                     });
                 }
             }
@@ -233,7 +234,8 @@ checkForChains(): boolean
                 {
                 info.gems.push({
                         column: column,
-                        line: endLine
+                        line: endLine,
+                        gem: grid[ column ][ endLine ]
                     });
                 }
             }
@@ -578,6 +580,11 @@ getAdjacentGems( column, line )
 addToAnimationQueue( info: GridAnimationQueue )
     {
     this.to_be_animated.push( info );
+
+    for (var a = 0, length = info.gems.length ; a < length ; a++)
+        {
+        info.gems[ a ].gem.being_worked_on = true;
+        }
 
     this.startAnimations();
     }
