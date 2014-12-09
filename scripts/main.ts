@@ -4,6 +4,7 @@
 /// <reference path="grid.ts" />
 /// <reference path="game.ts" />
 /// <reference path="game_menu.ts" />
+/// <reference path="message.ts" />
 
 var G = {
     CANVAS: null,
@@ -20,15 +21,11 @@ window.onload = function()
 G.CANVAS = <HTMLCanvasElement> document.querySelector( '#MainCanvas' );
 G.STAGE = new createjs.Stage( G.CANVAS );
 
-var width = 600;
-var height = 400;
-
-G.CANVAS.width = width;
-G.CANVAS.height = height;
-
 
     // init of the game parts
+Game.init();
 Gem.init( G.STAGE );
+Message.init( G.STAGE );
 GameMenu.init();
 
 
@@ -50,9 +47,14 @@ var manifest = {
         ]
     };
 
+
+G.PRELOAD.on( 'progress', function( event )
+    {
+    Message.show( 'Loading.. ' + (event.progress * 100 | 0) + '%' );
+    });
 G.PRELOAD.on( 'complete', function( event )
     {
-    Game.init();
+    Message.hide();
     Game.start();
     });
 G.PRELOAD.loadManifest( manifest, true );
