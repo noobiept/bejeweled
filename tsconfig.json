@@ -1,0 +1,8 @@
+{
+    "exclude": [
+        "typings",
+        "build",
+        "release",
+        "libraries"
+    ]
+}

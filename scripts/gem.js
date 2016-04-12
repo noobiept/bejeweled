@@ -117,4 +117,4 @@ var Gem = (function () {
     // GemType is a enum, which will have as key the gem's id, plus the associated position (so we need to divide by 2)
     Gem.TYPE_COUNT = Object.keys(GemType).length / 2;
     return Gem;
-})();
+}());

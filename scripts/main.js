@@ -1,4 +1,4 @@
-/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../typings/browser.d.ts" />
 /// <reference path="../typings/utilities-1.4.d.ts" />
 /// <reference path="gem.ts" />
 /// <reference path="grid.ts" />
