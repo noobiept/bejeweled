@@ -16,6 +16,7 @@ window.onload = function () {
     // setting up the canvas and stage
     G.CANVAS = document.querySelector('#MainCanvas');
     G.STAGE = new createjs.Stage(G.CANVAS);
+    createjs.Ticker.timingMode = createjs.Ticker.RAF;
     // init of the game parts
     Game.init();
     Gem.init(G.STAGE);

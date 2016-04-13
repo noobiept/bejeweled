@@ -22,6 +22,7 @@ window.onload = function()
 G.CANVAS = <HTMLCanvasElement> document.querySelector( '#MainCanvas' );
 G.STAGE = new createjs.Stage( G.CANVAS );
 
+createjs.Ticker.timingMode = createjs.Ticker.RAF;
 
     // init of the game parts
 Game.init();
@@ -29,7 +30,6 @@ Gem.init( G.STAGE );
 Message.init( G.STAGE );
 GameMenu.init();
 HighScore.init();
-
 
     // preload part
 G.PRELOAD = new createjs.LoadQueue();
