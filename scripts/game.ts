@@ -5,6 +5,7 @@ var SELECTED: Gem = null;
 var SCORE = 0;
 var GRID_SIZE = 8;
 
+
 export function init()
     {
     G.CANVAS.width = GRID_SIZE * Gem.SIZE;
@@ -13,6 +14,11 @@ export function init()
     createjs.Ticker.on( 'tick', function( event )
         {
         G.STAGE.update();
+
+        if ( GRID )
+            {
+            GRID.tick();
+            }
         });
     }
 

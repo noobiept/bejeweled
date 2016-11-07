@@ -132,24 +132,34 @@ removeGem( column, line, callback?: () => any )
     var _this = this;
     var gem = this.grid[ column ][ line ];
 
-        // update the grid first, and not at the end of the animation (so that we can queue more actions, based on the end result)
-    _this.grid[ column ][ line ] = null;
-
     if ( gem !== null )
         {
-        gem.remove( callback );
+        gem.remove( function()
+            {
+            _this.grid[ column ][ line ] = null;
+            });
         }
     }
 
 
-
 moveGem( gem, column, line, callback?: () => any )
     {
+    if ( column < 0 || column >= this.size ||
+         line   < 0 || line   >= this.size )
+        {
+        return;
+        }
+
     var _this = this;
 
-    _this.grid[ column ][ line ] = gem;
+    gem.moveTo( column, line, function()
+        {
+        _this.grid[ gem.column ][ gem.line ] = null;
+        _this.grid[ column ][ line ] = gem;
 
-    gem.moveTo( column, line, callback );
+        gem.column = column;
+        gem.line = line;
+        });
     }
 
 
@@ -163,7 +173,8 @@ clearChains(): boolean
 
     var aChainCleared = this.checkForChains();
 
-    if ( !aChainCleared )
+/*
+    if ( !aChainCleared )   //HERE
         {
         if ( !this.reAddGems() )
             {
@@ -179,7 +190,7 @@ clearChains(): boolean
                     });
                 }
             }
-        }
+        }*/
 
     return aChainCleared;
     }
@@ -227,11 +238,7 @@ checkForChains(): boolean
             {
             for (var line = endLine ; line > endLine - count ; line--)
                 {
-                info.gems.push({
-                        column: endColumn,
-                        line: line,
-                        gem: grid[ endColumn ][ line ]
-                    });
+                _this.removeGem( endColumn, line );
                 }
             }
 
@@ -239,11 +246,7 @@ checkForChains(): boolean
             {
             for (var column = endColumn ; column > endColumn - count ; column--)
                 {
-                info.gems.push({
-                        column: column,
-                        line: endLine,
-                        gem: grid[ column ][ endLine ]
-                    });
+                _this.removeGem( column, endLine );
                 }
             }
         };
@@ -463,7 +466,6 @@ checkVerticalChain( column, line )
 /*
     Existing gems fall down (so that all the gaps are on top), and then add new gems on top.
  */
-
 reAddGems(): boolean
     {
     var size = this.size;
@@ -750,7 +752,7 @@ isThereMoreValidMoves(): boolean
                 { columnOffset: 0, lineOffset: 2 }
             ]
         ];
-        
+
         // loop here over the moves, for each gem
     var size = this.size;
     var grid = this.grid;
@@ -792,5 +794,40 @@ clear()
     this.clearing = true;
 
     Gem._CONTAINER.removeAllChildren();
+    }
+
+
+tick()
+    {
+        // drop the gems
+    for (var column = 0 ; column < this.size ; column++)
+        {
+        for (var line = 0 ; line < this.size ; line++)
+            {
+            var gem = this.grid[ column ][ line ];
+            var below = this.grid[ column ][ line + 1 ];
+
+            if ( gem && !gem.is_moving && !below )
+                {
+                this.moveGem( gem, gem.column, gem.line + 1 );
+                }
+            }
+        }
+
+
+        // add new gems at the top (if empty)
+    for (var column = 0 ; column < this.size ; column++)
+        {
+        var gem = this.grid[ column ][ 0 ];
+
+        if ( !gem )
+            {
+                // gem = this.newRandomGem( column, 0, true );
+            gem = this.newRandomGem( column, 0, false );
+            gem.positionIn( column, -1 );
+            gem.moveTo( column, 0 );
+            this.grid[ column ][ 0 ] = gem;
+            }
+        }
     }
 }

@@ -21,7 +21,7 @@ Images
 Dependencies
 ============
 
-- typescript: `1.8`
+- typescript: `2.0`
 - createjs
     - easeljs: `0.8`
     - preloadjs: `0.6`

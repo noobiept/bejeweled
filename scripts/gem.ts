@@ -3,10 +3,10 @@ enum GemType
         green_gem,
         blue_gem,
         gray_gem,
-        purple_gem,
+        /*purple_gem,
         yellow_gem,
         red_gem,
-        orange_gem
+        orange_gem*/
     }
 
 enum GemAction
@@ -44,6 +44,8 @@ id: GemType;
 already_checked_horizontal: boolean;
 already_checked_vertical: boolean;
 being_worked_on: boolean;
+
+
 
 constructor( id: GemType )
     {
@@ -131,10 +133,7 @@ moveTo( column, line, callback?: () => any )
         distance = Gem.SIZE;
         }
 
-
     this.is_moving = true;
-    this.column = column;
-    this.line = line;
 
     var duration = distance / Gem.MOVEMENT_SPEED * 1000;
 

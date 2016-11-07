@@ -11,7 +11,6 @@ var G = {
     STAGE: null,
     PRELOAD: null
 };
-var BASE_URL = '';
 window.onload = function () {
     // setting up the canvas and stage
     G.CANVAS = document.querySelector('#MainCanvas');
@@ -26,7 +25,7 @@ window.onload = function () {
     // preload part
     G.PRELOAD = new createjs.LoadQueue();
     var manifest = {
-        path: BASE_URL + 'images/',
+        path: 'images/',
         manifest: [
             { id: 'gem_selected', src: 'gem_selected.png' },
             { id: 'blue_gem', src: 'blue_gem.png' },

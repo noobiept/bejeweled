@@ -9,6 +9,9 @@ var Game;
         G.CANVAS.height = GRID_SIZE * Gem.SIZE;
         createjs.Ticker.on('tick', function (event) {
             G.STAGE.update();
+            if (GRID) {
+                GRID.tick();
+            }
         });
     }
     Game.init = init;

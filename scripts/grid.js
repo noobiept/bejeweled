@@ -77,33 +77,48 @@ var Grid = (function () {
     Grid.prototype.removeGem = function (column, line, callback) {
         var _this = this;
         var gem = this.grid[column][line];
-        // update the grid first, and not at the end of the animation (so that we can queue more actions, based on the end result)
-        _this.grid[column][line] = null;
         if (gem !== null) {
-            gem.remove(callback);
+            gem.remove(function () {
+                _this.grid[column][line] = null;
+            });
         }
     };
     Grid.prototype.moveGem = function (gem, column, line, callback) {
+        if (column < 0 || column >= this.size ||
+            line < 0 || line >= this.size) {
+            return;
+        }
         var _this = this;
-        _this.grid[column][line] = gem;
-        gem.moveTo(column, line, callback);
+        gem.moveTo(column, line, function () {
+            _this.grid[gem.column][gem.line] = null;
+            _this.grid[column][line] = gem;
+            gem.column = column;
+            gem.line = line;
+        });
     };
     Grid.prototype.clearChains = function () {
         if (this.clearing) {
             return false;
         }
         var aChainCleared = this.checkForChains();
-        if (!aChainCleared) {
-            if (!this.reAddGems()) {
-                if (!this.isThereMoreValidMoves()) {
-                    var score = Game.getScore();
-                    HighScore.add(score);
-                    Message.show('No more valid moves!\nScore: ' + score, 2000, function () {
-                        Game.restart();
-                    });
-                }
-            }
-        }
+        /*
+            if ( !aChainCleared )   //HERE
+                {
+                if ( !this.reAddGems() )
+                    {
+                    if ( !this.isThereMoreValidMoves() )
+                        {
+                        var score = Game.getScore();
+        
+                        HighScore.add( score );
+        
+                        Message.show( 'No more valid moves!\nScore: ' + score, 2000, function()
+                            {
+                            Game.restart();
+                            });
+                        }
+                    }
+                }*/
         return aChainCleared;
     };
     Grid.prototype.clearGemFlags = function () {
@@ -133,20 +148,12 @@ var Grid = (function () {
         var removeChain = function (endColumn, endLine, count, vertical) {
             if (vertical === true) {
                 for (var line = endLine; line > endLine - count; line--) {
-                    info.gems.push({
-                        column: endColumn,
-                        line: line,
-                        gem: grid[endColumn][line]
-                    });
+                    _this.removeGem(endColumn, line);
                 }
             }
             else {
                 for (var column = endColumn; column > endColumn - count; column--) {
-                    info.gems.push({
-                        column: column,
-                        line: endLine,
-                        gem: grid[column][endLine]
-                    });
+                    _this.removeGem(column, endLine);
                 }
             }
         };
@@ -530,6 +537,29 @@ var Grid = (function () {
     Grid.prototype.clear = function () {
         this.clearing = true;
         Gem._CONTAINER.removeAllChildren();
+    };
+    Grid.prototype.tick = function () {
+        // drop the gems
+        for (var column = 0; column < this.size; column++) {
+            for (var line = 0; line < this.size; line++) {
+                var gem = this.grid[column][line];
+                var below = this.grid[column][line + 1];
+                if (gem && !gem.is_moving && !below) {
+                    this.moveGem(gem, gem.column, gem.line + 1);
+                }
+            }
+        }
+        // add new gems at the top (if empty)
+        for (var column = 0; column < this.size; column++) {
+            var gem = this.grid[column][0];
+            if (!gem) {
+                // gem = this.newRandomGem( column, 0, true );
+                gem = this.newRandomGem(column, 0, false);
+                gem.positionIn(column, -1);
+                gem.moveTo(column, 0);
+                this.grid[column][0] = gem;
+            }
+        }
     };
     return Grid;
 }());
