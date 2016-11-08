@@ -134,6 +134,8 @@ moveTo( column, line, callback?: () => any )
         }
 
     this.is_moving = true;
+    this.being_worked_on = true;
+
 
     var duration = distance / Gem.MOVEMENT_SPEED * 1000;
 
@@ -144,6 +146,8 @@ moveTo( column, line, callback?: () => any )
         {
         _this.is_moving = false;
         _this.being_worked_on = false;
+        _this.column = column;
+        _this.line = line;
 
         if ( callback )
             {
@@ -171,6 +175,7 @@ getY()
 remove( callback?: () => any )
     {
     var _this = this;
+    this.being_worked_on = true;
 
     createjs.Tween.get( this.shape ).to(
         {

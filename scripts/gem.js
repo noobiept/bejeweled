@@ -73,6 +73,7 @@ var Gem = (function () {
             distance = Gem.SIZE;
         }
         this.is_moving = true;
+        this.being_worked_on = true;
         var duration = distance / Gem.MOVEMENT_SPEED * 1000;
         createjs.Tween.get(this.shape, { override: true }).to({
             x: canvasPosition.x,
@@ -80,6 +81,8 @@ var Gem = (function () {
         }, duration).call(function () {
             _this.is_moving = false;
             _this.being_worked_on = false;
+            _this.column = column;
+            _this.line = line;
             if (callback) {
                 callback();
             }
@@ -96,6 +99,7 @@ var Gem = (function () {
     };
     Gem.prototype.remove = function (callback) {
         var _this = this;
+        this.being_worked_on = true;
         createjs.Tween.get(this.shape).to({
             scaleX: 0,
             scaleY: 0
