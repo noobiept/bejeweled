@@ -632,7 +632,7 @@ tick()
             var gem = this.grid[ column ][ line ];
             var below = this.grid[ column ][ line + 1 ];
 
-            if ( gem && !gem.is_moving && !gem.being_worked_on && !below )
+            if ( gem && !gem.being_animated && !below )
                 {
                 this.moveGem( gem, gem.column, gem.line + 1 );
                 }

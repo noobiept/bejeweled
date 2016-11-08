@@ -36,8 +36,7 @@ var Game;
                 SELECTED = null;
             }
             else {
-                if (SELECTED.is_moving || SELECTED.being_worked_on ||
-                    gem.is_moving || gem.being_worked_on) {
+                if (SELECTED.being_animated || gem.being_animated) {
                     SELECTED.setSelection(false);
                     SELECTED = null;
                     return;

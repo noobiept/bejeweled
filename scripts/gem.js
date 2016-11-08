@@ -11,6 +11,9 @@ var GemAction;
 })(GemAction || (GemAction = {}));
 var Gem = (function () {
     function Gem(id) {
+        this.already_checked_horizontal = false;
+        this.already_checked_vertical = false;
+        this.being_animated = false;
         var _this = this;
         var shape = new createjs.Container();
         var gem = new createjs.Bitmap(G.PRELOAD.getResult(GemType[id]));
@@ -26,7 +29,7 @@ var Gem = (function () {
         shape.regY = Gem.SIZE / 2;
         shape.hitArea = hitArea;
         shape.on('click', function () {
-            if (!_this.is_moving && !_this.being_worked_on) {
+            if (!_this.being_animated) {
                 Game.gemClicked(_this);
             }
         });
@@ -38,11 +41,7 @@ var Gem = (function () {
         this.gem = gem;
         this.selection = selection;
         this.shape = shape;
-        this.is_moving = false;
         this.id = id;
-        this.already_checked_horizontal = false;
-        this.already_checked_vertical = false;
-        this.being_worked_on = false;
     }
     Gem.init = function (stage) {
         Gem._CONTAINER = new createjs.Container();
@@ -72,15 +71,13 @@ var Gem = (function () {
         if (distance < Gem.SIZE) {
             distance = Gem.SIZE;
         }
-        this.is_moving = true;
-        this.being_worked_on = true;
+        this.being_animated = true;
         var duration = distance / Gem.MOVEMENT_SPEED * 1000;
         createjs.Tween.get(this.shape, { override: true }).to({
             x: canvasPosition.x,
             y: canvasPosition.y
         }, duration).call(function () {
-            _this.is_moving = false;
-            _this.being_worked_on = false;
+            _this.being_animated = false;
             _this.column = column;
             _this.line = line;
             if (callback) {
@@ -99,12 +96,13 @@ var Gem = (function () {
     };
     Gem.prototype.remove = function (callback) {
         var _this = this;
-        this.being_worked_on = true;
+        this.being_animated = true;
         createjs.Tween.get(this.shape).to({
             scaleX: 0,
             scaleY: 0
         }, 300).call(function () {
             Gem._CONTAINER.removeChild(_this.shape);
+            _this.being_animated = false;
             if (callback) {
                 callback();
             }

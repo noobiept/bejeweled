@@ -39,12 +39,10 @@ gem: createjs.Bitmap;
 selection: createjs.Bitmap;
 column: number;
 line: number;
-is_moving: boolean;
 id: GemType;
-already_checked_horizontal: boolean;
-already_checked_vertical: boolean;
-being_worked_on: boolean;
-
+already_checked_horizontal = false;
+already_checked_vertical = false;
+being_animated = false;
 
 
 constructor( id: GemType )
@@ -71,7 +69,7 @@ constructor( id: GemType )
     shape.hitArea = hitArea;
     shape.on( 'click', function()
         {
-        if ( !_this.is_moving && !_this.being_worked_on )
+        if ( !_this.being_animated )
             {
             Game.gemClicked( _this );
             }
@@ -87,11 +85,7 @@ constructor( id: GemType )
     this.gem = gem;
     this.selection = selection;
     this.shape = shape;
-    this.is_moving = false;
     this.id = id;
-    this.already_checked_horizontal = false;
-    this.already_checked_vertical = false;
-    this.being_worked_on = false;
     }
 
 
@@ -134,9 +128,7 @@ moveTo( column, line, callback?: () => any )
         distance = Gem.SIZE;
         }
 
-    this.is_moving = true;
-    this.being_worked_on = true;
-
+    this.being_animated = true;
 
     var duration = distance / Gem.MOVEMENT_SPEED * 1000;
 
@@ -145,8 +137,7 @@ moveTo( column, line, callback?: () => any )
             y: canvasPosition.y
         }, duration ).call( function()
         {
-        _this.is_moving = false;
-        _this.being_worked_on = false;
+        _this.being_animated = false;
         _this.column = column;
         _this.line = line;
 
@@ -176,7 +167,7 @@ getY()
 remove( callback?: () => any )
     {
     var _this = this;
-    this.being_worked_on = true;
+    this.being_animated = true;
 
     createjs.Tween.get( this.shape ).to(
         {
@@ -185,6 +176,7 @@ remove( callback?: () => any )
         }, 300 ).call( function()
             {
             Gem._CONTAINER.removeChild( _this.shape );
+            _this.being_animated = false;
 
             if ( callback )
                 {
