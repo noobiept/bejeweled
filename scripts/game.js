@@ -36,6 +36,12 @@ var Game;
                 SELECTED = null;
             }
             else {
+                if (SELECTED.is_moving || SELECTED.being_worked_on ||
+                    gem.is_moving || gem.being_worked_on) {
+                    SELECTED.setSelection(false);
+                    SELECTED = null;
+                    return;
+                }
                 // can only switch adjacent gems
                 if (GRID.isValidSwitch(gem, SELECTED)) {
                     GRID.switchGems(gem, SELECTED);

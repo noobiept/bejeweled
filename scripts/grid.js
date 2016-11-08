@@ -3,8 +3,6 @@ var Grid = (function () {
         this.animated_count = 0;
         this.grid = [];
         this.size = size;
-        this.to_be_animated = [];
-        this.animating = false;
         this.clearing = false;
         for (var column = 0; column < size; column++) {
             this.grid[column] = [];
@@ -150,6 +148,8 @@ var Grid = (function () {
                     _this.removeGem(column, endLine);
                 }
             }
+            Game.addToScore(count * 10);
+            GameMenu.addToTimer(count);
         };
         for (var column = 0; column < size; column++) {
             for (var line = 0; line < size; line++) {
@@ -290,68 +290,6 @@ var Grid = (function () {
             return null;
         }
     };
-    /*
-        Existing gems fall down (so that all the gaps are on top), and then add new gems on top.
-     */
-    Grid.prototype.reAddGems = function () {
-        var size = this.size;
-        var gem;
-        var line;
-        var info = {
-            action: GemAction.move,
-            gems: []
-        };
-        for (var column = 0; column < size; column++) {
-            var gems = [];
-            // get all the gems in this column
-            for (line = 0; line < size; line++) {
-                gem = this.grid[column][line];
-                if (gem !== null) {
-                    gems.push(gem);
-                }
-            }
-            var gemDiff = size - gems.length;
-            var gapCount = 0;
-            // move all the gems to the bottom (all the gaps on top)
-            for (line = size - 1; line >= 0; line--) {
-                gem = gems[line - gemDiff];
-                if (gem) {
-                    if (gem.column !== column || gem.line !== line) {
-                        info.gems.push({
-                            gem: gem,
-                            column: column,
-                            line: line
-                        });
-                        this.grid[column][line] = gem;
-                    }
-                }
-                else {
-                    gapCount++;
-                    this.grid[column][line] = null;
-                }
-            }
-            // re-add new random gems
-            for (line = 0; line < size; line++) {
-                if (this.grid[column][line] === null) {
-                    gem = this.newRandomGem(column, line, false);
-                    gem.positionIn(column, -(gapCount - line));
-                    info.gems.push({
-                        gem: gem,
-                        column: column,
-                        line: line
-                    });
-                }
-                else {
-                    break;
-                }
-            }
-        }
-        if (info.gems.length > 0) {
-            this.addToAnimationQueue(info);
-            return true;
-        }
-        return false;
-    };
     Grid.prototype.getAdjacentGems = function (column, line) {
         var adjacentGems = [];
         if (column > 0) {
@@ -367,56 +305,6 @@ var Grid = (function () {
             adjacentGems.push(this.grid[column][line + 1]);
         }
         return adjacentGems;
-    };
-    /*
-        Receives some gems, that are going to be animated when once all the other gems in the queue are dealt with
-     */
-    Grid.prototype.addToAnimationQueue = function (info) {
-        this.to_be_animated.push(info);
-        for (var a = 0, length = info.gems.length; a < length; a++) {
-            info.gems[a].gem.being_worked_on = true;
-        }
-        this.startAnimations();
-    };
-    /*
-        Start the next batch of animations
-     */
-    Grid.prototype.startAnimations = function () {
-        if (this.animating) {
-            return;
-        }
-        if (this.to_be_animated.length === 0) {
-            this.clearChains();
-            return;
-        }
-        var _this = this;
-        this.animating = true;
-        var info = this.to_be_animated.shift();
-        if (info.action === GemAction.move) {
-            for (var a = 1; a < info.gems.length; a++) {
-                var gemInfo = info.gems[a];
-                _this.moveGem(gemInfo.gem, gemInfo.column, gemInfo.line);
-            }
-            var first = info.gems[0];
-            _this.moveGem(first.gem, first.column, first.line, function () {
-                _this.animating = false;
-                _this.startAnimations();
-            });
-        }
-        else if (info.action === GemAction.remove) {
-            var gemChain = info.gems.length;
-            Game.addToScore(gemChain * 10);
-            GameMenu.addToTimer(gemChain);
-            for (var a = 1; a < info.gems.length; a++) {
-                var gemInfo = info.gems[a];
-                _this.removeGem(gemInfo.column, gemInfo.line);
-            }
-            var first = info.gems[0];
-            _this.removeGem(first.column, first.line, function () {
-                _this.animating = false;
-                _this.startAnimations();
-            });
-        }
     };
     Grid.toCanvasPosition = function (column, line) {
         return {

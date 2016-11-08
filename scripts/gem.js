@@ -103,7 +103,7 @@ var Gem = (function () {
         createjs.Tween.get(this.shape).to({
             scaleX: 0,
             scaleY: 0
-        }, 400).call(function () {
+        }, 300).call(function () {
             Gem._CONTAINER.removeChild(_this.shape);
             if (callback) {
                 callback();
@@ -111,7 +111,7 @@ var Gem = (function () {
         });
     };
     Gem.SIZE = 50;
-    Gem.MOVEMENT_SPEED = 300;
+    Gem.MOVEMENT_SPEED = 400;
     // GemType is a enum, which will have as key the gem's id, plus the associated position (so we need to divide by 2)
     Gem.TYPE_COUNT = Object.keys(GemType).length / 2;
     return Gem;

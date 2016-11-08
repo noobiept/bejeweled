@@ -21,7 +21,7 @@ class Gem
 {
 static _CONTAINER: createjs.Container;
 static SIZE = 50;
-static MOVEMENT_SPEED = 300;
+static MOVEMENT_SPEED = 400;
 
     // GemType is a enum, which will have as key the gem's id, plus the associated position (so we need to divide by 2)
 static TYPE_COUNT = Object.keys( GemType ).length / 2;
@@ -93,6 +93,7 @@ constructor( id: GemType )
     this.already_checked_vertical = false;
     this.being_worked_on = false;
     }
+
 
 positionIn( column, line )
     {
@@ -181,7 +182,7 @@ remove( callback?: () => any )
         {
             scaleX: 0,
             scaleY: 0
-        }, 400 ).call( function()
+        }, 300 ).call( function()
             {
             Gem._CONTAINER.removeChild( _this.shape );
 
