@@ -27,7 +27,7 @@ static MOVEMENT_SPEED = 400;
 static TYPE_COUNT = Object.keys( GemType ).length / 2;
 
 
-static init( stage )
+static init( stage: createjs.Stage )
     {
     Gem._CONTAINER = new createjs.Container();
 
@@ -50,8 +50,8 @@ constructor( id: GemType )
     var _this = this;
 
     var shape = new createjs.Container();
-    var gem = new createjs.Bitmap( G.PRELOAD.getResult( GemType[ id ] ) );
-    var selection = new createjs.Bitmap( G.PRELOAD.getResult( 'gem_selected' ) );
+    var gem = new createjs.Bitmap( <HTMLImageElement> G.PRELOAD.getResult( GemType[ id ] ) );
+    var selection = new createjs.Bitmap( <HTMLImageElement> G.PRELOAD.getResult( 'gem_selected' ) );
 
     selection.visible = false;
 
@@ -89,7 +89,7 @@ constructor( id: GemType )
     }
 
 
-positionIn( column, line )
+positionIn( column: number, line: number )
     {
     this.column = column;
     this.line = line;
@@ -101,14 +101,14 @@ positionIn( column, line )
     }
 
 
-moveTo( column, line, callback?: () => any )
+moveTo( column: number, line: number, callback?: () => any )
     {
     var _this = this;
 
     var canvasPosition = Grid.toCanvasPosition( column, line );
     var distanceY = Math.abs( this.line - line ) * Gem.SIZE;
     var distanceX = Math.abs( this.column - column ) * Gem.SIZE;
-    var distance;
+    var distance: number;
 
         // moving up/down
         // can only move horizontally or vertically
@@ -149,7 +149,7 @@ moveTo( column, line, callback?: () => any )
     }
 
 
-setSelection( value )
+setSelection( value: boolean )
     {
     this.selection.visible = value;
     }

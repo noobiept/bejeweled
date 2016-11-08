@@ -40,13 +40,13 @@ export function hide()
     }
 
 
-export function updateScore( score )
+export function updateScore( score: number )
     {
-    SCORE.innerHTML = score;
+    SCORE.innerHTML = score.toString();
     }
 
 
-export function startTimer( startTime )
+export function startTimer( startTime: number )
     {
     TIMER.start( startTime * 1000, 0, function()
         {
@@ -61,7 +61,7 @@ export function startTimer( startTime )
         }, true );
     }
 
-export function addToTimer( time )
+export function addToTimer( time: number )
     {
     TIMER.add( time * 1000 );
     }

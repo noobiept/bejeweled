@@ -209,7 +209,7 @@ var Grid = (function () {
         var countLeft = 0;
         var countRight = 0;
         var referenceGem = grid[column][line];
-        var a;
+        var a = 0;
         var gem;
         // count to the right
         for (a = column + 1; a < size; a++) {
@@ -254,7 +254,7 @@ var Grid = (function () {
         if (!referenceGem) {
             return null;
         }
-        var a;
+        var a = 0;
         var gem;
         // count up
         for (a = line - 1; a >= 0; a--) {

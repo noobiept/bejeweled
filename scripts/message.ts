@@ -1,17 +1,18 @@
 module Message
 {
-var CONTAINER;
-var TEXT;
-var BACKGROUND;
-var TIMEOUT;
+var CONTAINER: createjs.Container;
+var TEXT: createjs.Text;
+var BACKGROUND: createjs.Shape;
+var TIMEOUT: Utilities.Timeout;
 
-export function init( stage )
+
+export function init( stage: createjs.Stage )
     {
         // timeout
     TIMEOUT = new Utilities.Timeout();
 
         // canvas
-    var canvas = stage.canvas;
+    var canvas = <HTMLCanvasElement> stage.canvas;
     var halfWidth = canvas.width / 2;
     var halfHeight = canvas.height / 2;
 
@@ -34,7 +35,7 @@ export function init( stage )
     }
 
 
-export function show( text, timeout?, callback? )
+export function show( text: string, timeout?: number, callback?: () => void )
     {
     TEXT.text = text;
     drawBackground();

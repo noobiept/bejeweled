@@ -7,7 +7,20 @@
 /// <reference path="message.ts" />
 /// <reference path="high_score.ts" />
 
-var G = {
+interface Global {
+    CANVAS: HTMLCanvasElement;
+    STAGE: createjs.Stage;
+    PRELOAD: createjs.LoadQueue;
+}
+
+interface GemChain {
+    line: number;
+    column: number;
+    size: number;
+}
+
+
+var G: Global = {
     CANVAS: null,
     STAGE: null,
     PRELOAD: null
@@ -48,7 +61,7 @@ var manifest = {
     };
 
 
-G.PRELOAD.on( 'progress', function( event )
+G.PRELOAD.on( 'progress', function( event: createjs.ProgressEvent )
     {
     Message.show( 'Loading.. ' + (event.progress * 100 | 0) + '%' );
     });

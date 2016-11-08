@@ -82,7 +82,7 @@ export function gemClicked( gem: Gem )
     }
 
 
-export function addToScore( score )
+export function addToScore( score: number )
     {
     SCORE += score;
 

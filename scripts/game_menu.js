@@ -27,7 +27,7 @@ var GameMenu;
     }
     GameMenu.hide = hide;
     function updateScore(score) {
-        SCORE.innerHTML = score;
+        SCORE.innerHTML = score.toString();
     }
     GameMenu.updateScore = updateScore;
     function startTimer(startTime) {

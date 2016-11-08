@@ -125,7 +125,7 @@ export function round( num: number, dec: number ): number;
 
 export function deepClone( obj: any ): any;
 
-export function inheritPrototype( derivedClass: any, baseClass: any );
+export function inheritPrototype( derivedClass: any, baseClass: any ): void;
 
 
 // ---------- Time Utilities ---------- //

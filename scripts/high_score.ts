@@ -13,7 +13,7 @@ export function init()
     }
 
 
-export function add( score )
+export function add( score: number )
     {
     if ( score > BEST_SCORE )
         {

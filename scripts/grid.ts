@@ -46,7 +46,7 @@ newRandomGem( column: number, line: number, positionGem: boolean )
     You can only switch 2 gems if they're adjacent with each other, and with a horizontal/vertical orientation
  */
 
-isValidSwitch( gem1, gem2 )
+isValidSwitch( gem1: Gem, gem2: Gem )
     {
     var columnDiff = Math.abs( gem1.column - gem2.column );
     var lineDiff = Math.abs( gem1.line - gem2.line );
@@ -61,7 +61,7 @@ isValidSwitch( gem1, gem2 )
     }
 
 
-switchGems( gem1, gem2 )
+switchGems( gem1: Gem, gem2: Gem )
     {
         // get the gem position before moving it (so we can then move the selected gem to this position)
     var gem1_column = gem1.column;
@@ -107,7 +107,7 @@ switchGems( gem1, gem2 )
     }
 
 
-removeGem( column, line, callback?: () => any )
+removeGem( column: number, line: number, callback?: () => any )
     {
     var _this = this;
     var gem = this.grid[ column ][ line ];
@@ -124,7 +124,7 @@ removeGem( column, line, callback?: () => any )
     }
 
 
-moveGem( gem, column, line, callback?: () => any )
+moveGem( gem: Gem, column: number, line: number, callback?: () => any )
     {
     if ( column < 0 || column >= this.size ||
          line   < 0 || line   >= this.size )
@@ -226,7 +226,7 @@ checkForChains(): boolean
     var foundChains = false;
 
 
-    var removeChain = function( endColumn, endLine, count, vertical: boolean )
+    var removeChain = function( endColumn: number, endLine: number, count: number, vertical: boolean )
         {
         if ( vertical === true )
             {
@@ -260,13 +260,13 @@ checkForChains(): boolean
                 continue;
                 }
 
-            var horizontalChains = [];
-            var verticalChains = [];
+            var horizontalChains: GemChain[] = [];
+            var verticalChains: GemChain[] = [];
 
                 // search for gem chains
                 // uses a flood fill algorithm, to determine the connected chains (of the same id as the starting gem)
                 // we have two flags for horizontal and vertical orientation, to know if we already checked the gem
-            var check = function( gem, id )
+            var check = function( gem: Gem, id: GemType )
                 {
                 if ( !gem ||
                      gem.id !== id ||
@@ -331,15 +331,15 @@ checkForChains(): boolean
     }
 
 
-checkHorizontalChain( column, line )
+checkHorizontalChain( column: number, line: number ): GemChain
     {
     var size = this.size;
     var grid = this.grid;
     var countLeft = 0;
     var countRight = 0;
     var referenceGem = grid[ column ][ line ];
-    var a;
-    var gem;
+    var a = 0;
+    var gem: Gem;
 
         // count to the right
     for (a = column + 1 ; a < size ; a++)
@@ -392,7 +392,7 @@ checkHorizontalChain( column, line )
         }
     }
 
-checkVerticalChain( column, line )
+checkVerticalChain( column: number, line: number ): GemChain
     {
     var size = this.size;
     var grid = this.grid;
@@ -405,8 +405,8 @@ checkVerticalChain( column, line )
         return null;
         }
 
-    var a;
-    var gem;
+    var a = 0;
+    var gem: Gem;
 
         // count up
     for (a = line - 1 ; a >= 0 ; a--)
@@ -460,9 +460,9 @@ checkVerticalChain( column, line )
     }
 
 
-getAdjacentGems( column, line )
+getAdjacentGems( column: number, line: number )
     {
-    var adjacentGems = [];
+    var adjacentGems: Gem[] = [];
 
     if ( column > 0 )
         {
@@ -488,7 +488,7 @@ getAdjacentGems( column, line )
     }
 
 
-static toCanvasPosition( column, line )
+static toCanvasPosition( column: number, line: number )
     {
     return {
             x: column * Gem.SIZE + Gem.SIZE / 2,
