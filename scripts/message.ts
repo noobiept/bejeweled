@@ -51,7 +51,7 @@ export function show( text: string, timeout?: number, callback?: () => void )
                 {
                 callback();
                 }
-            }, timeout );
+            }, timeout! );
         }
     }
 

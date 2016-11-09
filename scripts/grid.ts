@@ -1,6 +1,6 @@
 class Grid
 {
-grid: Gem[][];
+grid: (Gem | null)[][];
 size: number;
 
 clearing: boolean;
@@ -331,15 +331,21 @@ checkForChains(): boolean
     }
 
 
-checkHorizontalChain( column: number, line: number ): GemChain
+checkHorizontalChain( column: number, line: number ): GemChain | null
     {
     var size = this.size;
     var grid = this.grid;
     var countLeft = 0;
     var countRight = 0;
     var referenceGem = grid[ column ][ line ];
+
+    if ( !referenceGem )
+        {
+        return null;
+        }
+
     var a = 0;
-    var gem: Gem;
+    var gem: Gem | null;
 
         // count to the right
     for (a = column + 1 ; a < size ; a++)
@@ -392,7 +398,7 @@ checkHorizontalChain( column: number, line: number ): GemChain
         }
     }
 
-checkVerticalChain( column: number, line: number ): GemChain
+checkVerticalChain( column: number, line: number ): GemChain | null
     {
     var size = this.size;
     var grid = this.grid;
@@ -406,7 +412,7 @@ checkVerticalChain( column: number, line: number ): GemChain
         }
 
     var a = 0;
-    var gem: Gem;
+    var gem: Gem | null;
 
         // count up
     for (a = line - 1 ; a >= 0 ; a--)
@@ -466,22 +472,22 @@ getAdjacentGems( column: number, line: number )
 
     if ( column > 0 )
         {
-        adjacentGems.push( this.grid[ column - 1 ][ line ] );
+        adjacentGems.push( this.grid[ column - 1 ][ line ]! );
         }
 
     if ( column < this.size - 1 )
         {
-        adjacentGems.push( this.grid[ column + 1 ][ line ] );
+        adjacentGems.push( this.grid[ column + 1 ][ line ]! );
         }
 
     if ( line > 0 )
         {
-        adjacentGems.push( this.grid[ column ][ line - 1 ] );
+        adjacentGems.push( this.grid[ column ][ line - 1 ]! );
         }
 
     if ( line < this.size - 1 )
         {
-        adjacentGems.push( this.grid[ column ][ line + 1 ] );
+        adjacentGems.push( this.grid[ column ][ line + 1 ]! );
         }
 
     return adjacentGems;
@@ -587,7 +593,7 @@ isThereMoreValidMoves(): boolean
         {
         for (var line = 0 ; line < size ; line++)
             {
-            var gem = grid[ column ][ line ];
+            var gem = grid[ column ][ line ]!;
             var gemId = gem.id;
 
             for (var a = 0 ; a < movesSize ; a++)
@@ -601,8 +607,8 @@ isThereMoreValidMoves(): boolean
                 var twoLine = line + two.lineOffset;
 
 
-                if ( (grid[ oneColumn ] && grid[ oneColumn ][ oneLine ] && grid[ oneColumn ][ oneLine ].id === gemId) &&
-                     (grid[ twoColumn ] && grid[ twoColumn ][ twoLine ] && grid[ twoColumn ][ twoLine ].id === gemId) )
+                if ( (grid[ oneColumn ] && grid[ oneColumn ][ oneLine ] && grid[ oneColumn ][ oneLine ]!.id === gemId) &&
+                     (grid[ twoColumn ] && grid[ twoColumn ][ twoLine ] && grid[ twoColumn ][ twoLine ]!.id === gemId) )
                     {
                     return true;
                     }

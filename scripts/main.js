@@ -6,15 +6,15 @@
 /// <reference path="game_menu.ts" />
 /// <reference path="message.ts" />
 /// <reference path="high_score.ts" />
-var G = {
-    CANVAS: null,
-    STAGE: null,
-    PRELOAD: null
-};
+var G;
 window.onload = function () {
     // setting up the canvas and stage
-    G.CANVAS = document.querySelector('#MainCanvas');
-    G.STAGE = new createjs.Stage(G.CANVAS);
+    var canvas = document.querySelector('#MainCanvas');
+    G = {
+        CANVAS: canvas,
+        STAGE: new createjs.Stage(canvas),
+        PRELOAD: new createjs.LoadQueue()
+    };
     createjs.Ticker.timingMode = createjs.Ticker.RAF;
     // init of the game parts
     Game.init();
@@ -23,7 +23,6 @@ window.onload = function () {
     GameMenu.init();
     HighScore.init();
     // preload part
-    G.PRELOAD = new createjs.LoadQueue();
     var manifest = {
         path: 'images/',
         manifest: [

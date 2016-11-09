@@ -1,7 +1,7 @@
 module Game
 {
-var GRID: Grid;
-var SELECTED: Gem = null;
+var GRID: Grid | null;
+var SELECTED: Gem | null = null;
 var SCORE = 0;
 var GRID_SIZE = 8;
 
@@ -65,9 +65,9 @@ export function gemClicked( gem: Gem )
                 }
 
                 // can only switch adjacent gems
-            if ( GRID.isValidSwitch( gem, SELECTED ) )
+            if ( GRID!.isValidSwitch( gem, SELECTED ) )
                 {
-                GRID.switchGems( gem, SELECTED );
+                GRID!.switchGems( gem, SELECTED );
                 SELECTED = null;
                 }
 
@@ -98,7 +98,7 @@ export function getScore()
 
 export function restart()
     {
-    GRID.clear();
+    GRID!.clear();
     GRID = null;
 
     SCORE = 0;

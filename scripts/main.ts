@@ -20,18 +20,19 @@ interface GemChain {
 }
 
 
-var G: Global = {
-    CANVAS: null,
-    STAGE: null,
-    PRELOAD: null
-};
+var G: Global;
 
 
 window.onload = function()
 {
     // setting up the canvas and stage
-G.CANVAS = <HTMLCanvasElement> document.querySelector( '#MainCanvas' );
-G.STAGE = new createjs.Stage( G.CANVAS );
+var canvas = <HTMLCanvasElement> document.querySelector( '#MainCanvas' );
+
+G = {
+    CANVAS: canvas,
+    STAGE: new createjs.Stage( canvas ),
+    PRELOAD: new createjs.LoadQueue()
+};
 
 createjs.Ticker.timingMode = createjs.Ticker.RAF;
 
@@ -43,8 +44,6 @@ GameMenu.init();
 HighScore.init();
 
     // preload part
-G.PRELOAD = new createjs.LoadQueue();
-
 var manifest = {
         path: 'images/',
         manifest: [

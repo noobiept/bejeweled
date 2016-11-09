@@ -209,6 +209,9 @@ var Grid = (function () {
         var countLeft = 0;
         var countRight = 0;
         var referenceGem = grid[column][line];
+        if (!referenceGem) {
+            return null;
+        }
         var a = 0;
         var gem;
         // count to the right
