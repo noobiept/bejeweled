@@ -4,6 +4,7 @@ var GRID: Grid | null;
 var SELECTED: Gem | null = null;
 var SCORE = 0;
 var GRID_SIZE = 8;
+var GAME_OVER = false;
 
 
 export function init()
@@ -15,7 +16,7 @@ export function init()
         {
         G.STAGE.update();
 
-        if ( GRID )
+        if ( GRID && !GAME_OVER )
             {
             GRID.tick();
             }
@@ -25,6 +26,7 @@ export function init()
 
 export function start()
     {
+    GAME_OVER = false;
     GRID = new Grid( GRID_SIZE );
 
     GameMenu.startTimer( 30 );
@@ -105,5 +107,19 @@ export function restart()
     Message.hide();
 
     Game.start();
+    }
+
+
+export function over()
+    {
+    GAME_OVER = true;
+
+    var score = Game.getScore();
+    HighScore.add( score );
+
+    Message.show( 'No more valid moves!\nScore: ' + score, 2000, function()
+        {
+        Game.restart();
+        });
     }
 }

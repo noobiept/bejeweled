@@ -3,10 +3,10 @@ enum GemType
         green_gem,
         blue_gem,
         gray_gem,
-        /*purple_gem,
+        purple_gem,
         yellow_gem,
         red_gem,
-        orange_gem*/
+        orange_gem
     }
 
 enum GemAction
@@ -21,7 +21,7 @@ class Gem
 {
 static _CONTAINER: createjs.Container;
 static SIZE = 50;
-static MOVEMENT_SPEED = 400;
+static MOVEMENT_SPEED = 500;
 
     // GemType is a enum, which will have as key the gem's id, plus the associated position (so we need to divide by 2)
 static TYPE_COUNT = Object.keys( GemType ).length / 2;

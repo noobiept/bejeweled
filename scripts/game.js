@@ -4,18 +4,20 @@ var Game;
     var SELECTED = null;
     var SCORE = 0;
     var GRID_SIZE = 8;
+    var GAME_OVER = false;
     function init() {
         G.CANVAS.width = GRID_SIZE * Gem.SIZE;
         G.CANVAS.height = GRID_SIZE * Gem.SIZE;
         createjs.Ticker.on('tick', function (event) {
             G.STAGE.update();
-            if (GRID) {
+            if (GRID && !GAME_OVER) {
                 GRID.tick();
             }
         });
     }
     Game.init = init;
     function start() {
+        GAME_OVER = false;
         GRID = new Grid(GRID_SIZE);
         GameMenu.startTimer(30);
         GameMenu.updateScore(SCORE);
@@ -71,4 +73,13 @@ var Game;
         Game.start();
     }
     Game.restart = restart;
+    function over() {
+        GAME_OVER = true;
+        var score = Game.getScore();
+        HighScore.add(score);
+        Message.show('No more valid moves!\nScore: ' + score, 2000, function () {
+            Game.restart();
+        });
+    }
+    Game.over = over;
 })(Game || (Game = {}));

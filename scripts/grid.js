@@ -108,11 +108,7 @@ var Grid = (function () {
         var aChainCleared = this.checkForChains();
         if (!aChainCleared) {
             if (!this.isThereMoreValidMoves()) {
-                var score = Game.getScore();
-                HighScore.add(score);
-                Message.show('No more valid moves!\nScore: ' + score, 2000, function () {
-                    Game.restart();
-                });
+                Game.over();
             }
         }
         return aChainCleared;

@@ -3,6 +3,10 @@ var GemType;
     GemType[GemType["green_gem"] = 0] = "green_gem";
     GemType[GemType["blue_gem"] = 1] = "blue_gem";
     GemType[GemType["gray_gem"] = 2] = "gray_gem";
+    GemType[GemType["purple_gem"] = 3] = "purple_gem";
+    GemType[GemType["yellow_gem"] = 4] = "yellow_gem";
+    GemType[GemType["red_gem"] = 5] = "red_gem";
+    GemType[GemType["orange_gem"] = 6] = "orange_gem";
 })(GemType || (GemType = {}));
 var GemAction;
 (function (GemAction) {
@@ -109,7 +113,7 @@ var Gem = (function () {
         });
     };
     Gem.SIZE = 50;
-    Gem.MOVEMENT_SPEED = 400;
+    Gem.MOVEMENT_SPEED = 500;
     // GemType is a enum, which will have as key the gem's id, plus the associated position (so we need to divide by 2)
     Gem.TYPE_COUNT = Object.keys(GemType).length / 2;
     return Gem;
