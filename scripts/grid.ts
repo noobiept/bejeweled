@@ -276,7 +276,7 @@ clearChains(): boolean
         {
         if ( !this.isThereMoreValidMoves() )
             {
-            Game.over();
+            Game.over( 'No more valid moves!' );
             }
         }
 
