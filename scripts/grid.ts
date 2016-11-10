@@ -118,24 +118,22 @@ constructor( size: number )
 
         for (var line = 0 ; line < size ; line++)
             {
-            var gem = this.newRandomGem( column, line, true );
-
+            var gem = this.newRandomGem( column, line );
             this.grid[ column ][ line ] = gem;
             }
         }
     }
 
 
-newRandomGem( column: number, line: number, positionGem: boolean )
+/**
+ * Add a random gem to the given position.
+ */
+newRandomGem( column: number, line: number )
     {
     var gemType = Utilities.getRandomInt( 0, Gem.TYPE_COUNT - 1 );
 
     var gem = new Gem( gemType );
-
-    if ( positionGem === true )
-        {
-        gem.positionIn( column, line );
-        }
+    gem.positionIn( column, line );
 
     return gem;
     }
@@ -250,9 +248,7 @@ addGem( column: number, line: number )
     var _this = this;
     this.animated_count++;
 
-        // gem = this.newRandomGem( column, 0, true );
-    var gem = this.newRandomGem( column, 0, false );
-    gem.positionIn( column, -1 );
+    var gem = this.newRandomGem( column, -1 );
     _this.grid[ column ][ 0 ] = gem;
 
     gem.moveTo( column, 0, function()
@@ -646,6 +642,7 @@ isThereMoreValidMoves(): Gem | null
 clear()
     {
     this.clearing = true;
+    this.grid.length = 0;
 
     Gem._CONTAINER.removeAllChildren();
     }

@@ -1,15 +1,13 @@
 module HighScore
 {
-var HTML_ELEMENT: HTMLElement;
 var BEST_SCORE: number;
 
 export function init()
     {
-    HTML_ELEMENT = <HTMLElement> document.querySelector( '#HighScore' );
     BEST_SCORE = 0;
 
     load();
-    updateHtmlElement();
+    GameMenu.updateHighScore( BEST_SCORE );
     }
 
 
@@ -18,10 +16,10 @@ export function add( score: number )
     if ( score > BEST_SCORE )
         {
         BEST_SCORE = score;
-        }
 
-    save();
-    updateHtmlElement();
+        save();
+        GameMenu.updateHighScore( BEST_SCORE );
+        }
     }
 
 
@@ -42,16 +40,14 @@ function save()
     }
 
 
-function updateHtmlElement()
-    {
-    HTML_ELEMENT.innerHTML = BEST_SCORE.toString();
-    }
-
-
+/**
+ * Reset the high score.
+ */
 export function clear()
     {
     BEST_SCORE = 0;
 
     save();
+    GameMenu.updateHighScore( BEST_SCORE );
     }
 }

@@ -1,20 +1,18 @@
 var HighScore;
 (function (HighScore) {
-    var HTML_ELEMENT;
     var BEST_SCORE;
     function init() {
-        HTML_ELEMENT = document.querySelector('#HighScore');
         BEST_SCORE = 0;
         load();
-        updateHtmlElement();
+        GameMenu.updateHighScore(BEST_SCORE);
     }
     HighScore.init = init;
     function add(score) {
         if (score > BEST_SCORE) {
             BEST_SCORE = score;
+            save();
+            GameMenu.updateHighScore(BEST_SCORE);
         }
-        save();
-        updateHtmlElement();
     }
     HighScore.add = add;
     function load() {
@@ -26,12 +24,13 @@ var HighScore;
     function save() {
         Utilities.saveObject('bejeweled_high_score', BEST_SCORE);
     }
-    function updateHtmlElement() {
-        HTML_ELEMENT.innerHTML = BEST_SCORE.toString();
-    }
+    /**
+     * Reset the high score.
+     */
     function clear() {
         BEST_SCORE = 0;
         save();
+        GameMenu.updateHighScore(BEST_SCORE);
     }
     HighScore.clear = clear;
 })(HighScore || (HighScore = {}));

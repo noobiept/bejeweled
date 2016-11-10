@@ -2,6 +2,7 @@ var GameMenu;
 (function (GameMenu) {
     var CONTAINER;
     var SCORE;
+    var HIGH_SCORE;
     var TIMER;
     /**
      * Initialize the game menu.
@@ -13,6 +14,7 @@ var GameMenu;
         var help = document.getElementById('Help');
         help.onclick = Game.help;
         SCORE = container.querySelector('#Score');
+        HIGH_SCORE = document.getElementById('HighScore');
         var timerValue = container.querySelector('#Timer');
         TIMER = new Utilities.Timer(timerValue);
         CONTAINER = container;
@@ -55,4 +57,11 @@ var GameMenu;
         TIMER.add(time * 1000);
     }
     GameMenu.addToTimer = addToTimer;
+    /**
+     * Update menu with the current highest score.
+     */
+    function updateHighScore(score) {
+        HIGH_SCORE.innerHTML = score.toString();
+    }
+    GameMenu.updateHighScore = updateHighScore;
 })(GameMenu || (GameMenu = {}));

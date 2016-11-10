@@ -2,6 +2,7 @@ module GameMenu
 {
 var CONTAINER: HTMLElement;
 var SCORE: HTMLElement;
+var HIGH_SCORE: HTMLElement;
 var TIMER: Utilities.Timer;
 
 
@@ -19,6 +20,7 @@ export function init()
     help.onclick = Game.help;
 
     SCORE = <HTMLElement> container.querySelector( '#Score' );
+    HIGH_SCORE = <HTMLElement> document.getElementById( 'HighScore' );
 
     var timerValue = <HTMLElement> container.querySelector( '#Timer' );
 
@@ -72,5 +74,14 @@ export function startTimer( startTime: number )
 export function addToTimer( time: number )
     {
     TIMER.add( time * 1000 );
+    }
+
+
+/**
+ * Update menu with the current highest score.
+ */
+export function updateHighScore( score: number )
+    {
+    HIGH_SCORE.innerHTML = score.toString();
     }
 }
