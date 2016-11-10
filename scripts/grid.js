@@ -312,104 +312,33 @@ var Grid = (function () {
             y: line * Gem.SIZE + Gem.SIZE / 2
         };
     };
-    /*
-        Cases where there's still a valid gem chain
-        (the _x is the reference gem)
-    
-        _x xx | _xx x |    x | _xx  | _x   |   xx | _x x |   x
-              |       | _xx  |    x |   xx | _x   |   x  | _x x
-    
-        _x | _x | _x  |  _x | _x  |  _x | _x  |  _x
-         x |    |  x  |   x |   x |  x  |   x |  x
-           |  x |   x |  x  |   x |  x  |  x  |   x
-         x |  x |     |     |     |     |     |
+    /**
+     * Checks if there are more valid moves available.
+     * Returns the position of one of the gems that is part of a valid combination, or null if there are no more valid combinations.
      */
     Grid.prototype.isThereMoreValidMoves = function () {
-        var moves = [
-            [
-                { columnOffset: 2, lineOffset: 0 },
-                { columnOffset: 3, lineOffset: 0 }
-            ],
-            [
-                { columnOffset: 1, lineOffset: 0 },
-                { columnOffset: 3, lineOffset: 0 }
-            ],
-            [
-                { columnOffset: 1, lineOffset: 0 },
-                { columnOffset: 2, lineOffset: -1 }
-            ],
-            [
-                { columnOffset: 1, lineOffset: 0 },
-                { columnOffset: 2, lineOffset: 1 }
-            ],
-            [
-                { columnOffset: 1, lineOffset: 1 },
-                { columnOffset: 2, lineOffset: 1 }
-            ],
-            [
-                { columnOffset: 1, lineOffset: -1 },
-                { columnOffset: 2, lineOffset: -1 }
-            ],
-            [
-                { columnOffset: 1, lineOffset: 1 },
-                { columnOffset: 2, lineOffset: 0 }
-            ],
-            [
-                { columnOffset: 1, lineOffset: -1 },
-                { columnOffset: 2, lineOffset: 0 }
-            ],
-            [
-                { columnOffset: 0, lineOffset: 1 },
-                { columnOffset: 0, lineOffset: 3 }
-            ],
-            [
-                { columnOffset: 0, lineOffset: 2 },
-                { columnOffset: 0, lineOffset: 3 }
-            ],
-            [
-                { columnOffset: 0, lineOffset: 1 },
-                { columnOffset: 1, lineOffset: 2 }
-            ],
-            [
-                { columnOffset: 0, lineOffset: 1 },
-                { columnOffset: -1, lineOffset: 2 }
-            ],
-            [
-                { columnOffset: 1, lineOffset: 1 },
-                { columnOffset: 1, lineOffset: 2 }
-            ],
-            [
-                { columnOffset: -1, lineOffset: 1 },
-                { columnOffset: -1, lineOffset: 2 }
-            ],
-            [
-                { columnOffset: 1, lineOffset: 1 },
-                { columnOffset: 0, lineOffset: 2 }
-            ],
-            [
-                { columnOffset: -1, lineOffset: 1 },
-                { columnOffset: 0, lineOffset: 2 }
-            ]
-        ];
         // loop here over the moves, for each gem
         var size = this.size;
         var grid = this.grid;
-        var movesSize = moves.length;
+        var movesSize = Grid.ValidMoves.length;
         for (var column = 0; column < size; column++) {
             for (var line = 0; line < size; line++) {
                 var gem = grid[column][line];
+                if (!gem) {
+                    continue;
+                }
                 var gemId = gem.id;
                 for (var a = 0; a < movesSize; a++) {
-                    var move = moves[a];
-                    var one = move[0];
-                    var two = move[1];
+                    var move = Grid.ValidMoves[a];
+                    var one = move.one;
+                    var two = move.two;
                     var oneColumn = column + one.columnOffset;
                     var oneLine = line + one.lineOffset;
                     var twoColumn = column + two.columnOffset;
                     var twoLine = line + two.lineOffset;
                     if ((grid[oneColumn] && grid[oneColumn][oneLine] && grid[oneColumn][oneLine].id === gemId) &&
                         (grid[twoColumn] && grid[twoColumn][twoLine] && grid[twoColumn][twoLine].id === gemId)) {
-                        return gem;
+                        return grid[column + move.help.columnOffset][line + move.help.lineOffset];
                     }
                 }
             }
@@ -442,5 +371,103 @@ var Grid = (function () {
             this.clearChains();
         }
     };
+    /*
+        Cases where there's still a valid gem chain
+        (the _x is the reference gem)
+    
+        _x xx | _xx x |    x | _xx  | _x   |   xx | _x x |   x
+              |       | _xx  |    x |   xx | _x   |   x  | _x x
+    
+        _x | _x | _x  |  _x | _x  |  _x | _x  |  _x
+         x |    |  x  |   x |   x |  x  |   x |  x
+           |  x |   x |  x  |   x |  x  |  x  |   x
+         x |  x |     |     |     |     |     |
+    
+        The reference gem has { columnOffset: 0, lineOffset: 0 }.
+        The one/two gem are based on the reference gem position.
+        The "help" is the gem to return to help the player find a valid combination.
+     */
+    Grid.ValidMoves = [
+        {
+            one: { columnOffset: 2, lineOffset: 0 },
+            two: { columnOffset: 3, lineOffset: 0 },
+            help: { columnOffset: 0, lineOffset: 0 }
+        },
+        {
+            one: { columnOffset: 1, lineOffset: 0 },
+            two: { columnOffset: 3, lineOffset: 0 },
+            help: { columnOffset: 3, lineOffset: 0 }
+        },
+        {
+            one: { columnOffset: 1, lineOffset: 0 },
+            two: { columnOffset: 2, lineOffset: -1 },
+            help: { columnOffset: 2, lineOffset: -1 }
+        },
+        {
+            one: { columnOffset: 1, lineOffset: 0 },
+            two: { columnOffset: 2, lineOffset: 1 },
+            help: { columnOffset: 2, lineOffset: 1 }
+        },
+        {
+            one: { columnOffset: 1, lineOffset: 1 },
+            two: { columnOffset: 2, lineOffset: 1 },
+            help: { columnOffset: 0, lineOffset: 0 }
+        },
+        {
+            one: { columnOffset: 1, lineOffset: -1 },
+            two: { columnOffset: 2, lineOffset: -1 },
+            help: { columnOffset: 0, lineOffset: 0 }
+        },
+        {
+            one: { columnOffset: 1, lineOffset: 1 },
+            two: { columnOffset: 2, lineOffset: 0 },
+            help: { columnOffset: 1, lineOffset: 1 }
+        },
+        {
+            one: { columnOffset: 1, lineOffset: -1 },
+            two: { columnOffset: 2, lineOffset: 0 },
+            help: { columnOffset: 1, lineOffset: -1 }
+        },
+        {
+            one: { columnOffset: 0, lineOffset: 1 },
+            two: { columnOffset: 0, lineOffset: 3 },
+            help: { columnOffset: 0, lineOffset: 3 }
+        },
+        {
+            one: { columnOffset: 0, lineOffset: 2 },
+            two: { columnOffset: 0, lineOffset: 3 },
+            help: { columnOffset: 0, lineOffset: 0 }
+        },
+        {
+            one: { columnOffset: 0, lineOffset: 1 },
+            two: { columnOffset: 1, lineOffset: 2 },
+            help: { columnOffset: 1, lineOffset: 2 }
+        },
+        {
+            one: { columnOffset: 0, lineOffset: 1 },
+            two: { columnOffset: -1, lineOffset: 2 },
+            help: { columnOffset: -1, lineOffset: 2 }
+        },
+        {
+            one: { columnOffset: 1, lineOffset: 1 },
+            two: { columnOffset: 1, lineOffset: 2 },
+            help: { columnOffset: 0, lineOffset: 0 }
+        },
+        {
+            one: { columnOffset: -1, lineOffset: 1 },
+            two: { columnOffset: -1, lineOffset: 2 },
+            help: { columnOffset: 0, lineOffset: 0 }
+        },
+        {
+            one: { columnOffset: 1, lineOffset: 1 },
+            two: { columnOffset: 0, lineOffset: 2 },
+            help: { columnOffset: 1, lineOffset: 1 }
+        },
+        {
+            one: { columnOffset: -1, lineOffset: 1 },
+            two: { columnOffset: 0, lineOffset: 2 },
+            help: { columnOffset: -1, lineOffset: 1 }
+        }
+    ];
     return Grid;
 }());

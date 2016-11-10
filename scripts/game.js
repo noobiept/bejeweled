@@ -92,7 +92,9 @@ var Game;
     Game.restart = restart;
     function help() {
         var gem = GRID.isThereMoreValidMoves();
-        selectGem(gem);
+        if (gem) {
+            selectGem(gem);
+        }
     }
     Game.help = help;
     function over() {

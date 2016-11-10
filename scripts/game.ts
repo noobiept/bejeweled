@@ -139,7 +139,10 @@ export function help()
     {
     var gem = GRID!.isThereMoreValidMoves();
 
-    selectGem( gem! );
+    if ( gem )
+        {
+        selectGem( gem );
+        }
     }
 
 
