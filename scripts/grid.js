@@ -144,6 +144,7 @@ var Grid = (function () {
                     _this.removeGem(column, endLine);
                 }
             }
+            Game.playCombineSound();
             Game.addToScore(count * 10);
             GameMenu.addToTimer(count);
         };

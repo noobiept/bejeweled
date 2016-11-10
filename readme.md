@@ -18,6 +18,13 @@ Images
 - [Gems 2](http://opengameart.org/content/gems-set-01)
     - license: [CC Attribution](http://creativecommons.org/licenses/by/3.0/)
 
+Sounds
+======
+
+- [Select](https://www.freesound.org/people/kwahmah_02/sounds/256116/) - license: [Public Domain](https://creativecommons.org/publicdomain/zero/1.0/)
+- [Combine](https://www.freesound.org/people/JavierZumer/sounds/257227/) - license: [CC Attribution](https://creativecommons.org/licenses/by/3.0/)
+
+
 Dependencies
 ============
 

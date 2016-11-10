@@ -5,9 +5,15 @@ var Game;
     var SCORE = 0;
     var GRID_SIZE = 8;
     var GAME_OVER = false;
+    var SELECT_SOUND;
+    var COMBINE_SOUND;
     function init() {
         G.CANVAS.width = GRID_SIZE * Gem.SIZE;
         G.CANVAS.height = GRID_SIZE * Gem.SIZE;
+        SELECT_SOUND = new Audio('../sounds/select.wav');
+        SELECT_SOUND.load();
+        COMBINE_SOUND = new Audio('../sounds/combine.wav');
+        COMBINE_SOUND.load();
         createjs.Ticker.on('tick', function (event) {
             G.STAGE.update();
             if (GRID && !GAME_OVER) {
@@ -18,6 +24,7 @@ var Game;
     Game.init = init;
     function start() {
         GAME_OVER = false;
+        SELECTED = null;
         GRID = new Grid(GRID_SIZE);
         GameMenu.startTimer(30);
         GameMenu.updateScore(SCORE);
@@ -29,6 +36,7 @@ var Game;
         if (SELECTED === null) {
             SELECTED = gem;
             gem.setSelection(true);
+            playSelectSound();
         }
         else {
             // clear the selection of previously selected gem
@@ -51,6 +59,7 @@ var Game;
                 else {
                     SELECTED = gem;
                     gem.setSelection(true);
+                    playSelectSound();
                 }
             }
         }
@@ -82,4 +91,14 @@ var Game;
         });
     }
     Game.over = over;
+    function playSelectSound() {
+        SELECT_SOUND.currentTime = 0;
+        SELECT_SOUND.play();
+    }
+    Game.playSelectSound = playSelectSound;
+    function playCombineSound() {
+        COMBINE_SOUND.currentTime = 0;
+        COMBINE_SOUND.play();
+    }
+    Game.playCombineSound = playCombineSound;
 })(Game || (Game = {}));

@@ -236,6 +236,7 @@ checkForChains(): boolean
                 }
             }
 
+        Game.playCombineSound();
         Game.addToScore( count * 10 );
         GameMenu.addToTimer( count );
         };
