@@ -1,6 +1,7 @@
 body
     {
     text-align: center;
+    background-color: rgb(245, 245, 245);
     }
 
 ul
@@ -13,20 +14,35 @@ ul
 #GameMenu
     {
     visibility: hidden;
+    margin-top: 10px;
+    }
+
+#GameMenu > :first-child
+    {
+    margin: 10px;
     }
 
 #GameMenu ul > *
     {
     display: inline-block;
-    padding: 0 10px;
+    padding: 0 15px;
     }
 
 .button
     {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 110%;
     cursor: pointer;
+
     }
 
 .button:hover
     {
     background-color: #ceb19e;
+    }
+
+.value
+    {
+    font-weight: bold;
+    color: darkblue;
     }
