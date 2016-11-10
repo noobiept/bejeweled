@@ -21,8 +21,8 @@ var Grid = (function () {
         gem.positionIn(column, line);
         return gem;
     };
-    /*
-        You can only switch 2 gems if they're adjacent with each other, and with a horizontal/vertical orientation
+    /**
+     * Check if you can switch the given gems. You can only switch 2 gems if they're adjacent with each other, and with a horizontal/vertical orientation.
      */
     Grid.prototype.isValidSwitch = function (gem1, gem2) {
         var columnDiff = Math.abs(gem1.column - gem2.column);
@@ -33,6 +33,9 @@ var Grid = (function () {
         }
         return false;
     };
+    /**
+     * Try to switch the given gems. If its not possible, then the gems will switch back to the original position.
+     */
     Grid.prototype.switchGems = function (gem1, gem2) {
         // get the gem position before moving it (so we can then move the selected gem to this position)
         var gem1_column = gem1.column;
@@ -65,6 +68,9 @@ var Grid = (function () {
             }
         });
     };
+    /**
+     * Remove a gem from the grid.
+     */
     Grid.prototype.removeGem = function (column, line, callback) {
         var _this = this;
         var gem = this.grid[column][line];
@@ -76,6 +82,9 @@ var Grid = (function () {
             });
         }
     };
+    /**
+     * Move a gem to a new position.
+     */
     Grid.prototype.moveGem = function (gem, column, line, callback) {
         if (column < 0 || column >= this.size ||
             line < 0 || line >= this.size) {
@@ -91,6 +100,9 @@ var Grid = (function () {
             _this.animated_count--;
         });
     };
+    /**
+     * Add a new random gem to the given position.
+     */
     Grid.prototype.addGem = function (column, line) {
         var _this = this;
         this.animated_count++;
@@ -100,6 +112,9 @@ var Grid = (function () {
             _this.animated_count--;
         });
     };
+    /**
+     * Find any gem chains/combinations and remove them (while adding to the score as well).
+     */
     Grid.prototype.clearChains = function () {
         if (this.clearing) {
             return false;
@@ -112,6 +127,9 @@ var Grid = (function () {
         }
         return aChainCleared;
     };
+    /**
+     * Clear the search flags from all the gems.
+     */
     Grid.prototype.clearGemFlags = function () {
         var size = this.size;
         for (var column = 0; column < size; column++) {
@@ -124,8 +142,8 @@ var Grid = (function () {
             }
         }
     };
-    /*
-        Checks for gem chains (3+ gems in horizontal/vertical line), and clears them
+    /**
+     * Checks for gem chains (3+ gems in horizontal/vertical line), and clears them.
      */
     Grid.prototype.checkForChains = function () {
         var _this = this;
@@ -199,6 +217,9 @@ var Grid = (function () {
         this.clearGemFlags();
         return foundChains;
     };
+    /**
+     * Check for a gem chain in the horizontal orientation.
+     */
     Grid.prototype.checkHorizontalChain = function (column, line) {
         var size = this.size;
         var grid = this.grid;
@@ -244,6 +265,9 @@ var Grid = (function () {
             return null;
         }
     };
+    /**
+     * Check for a gem chain in the vertical orientation.
+     */
     Grid.prototype.checkVerticalChain = function (column, line) {
         var size = this.size;
         var grid = this.grid;
@@ -289,6 +313,9 @@ var Grid = (function () {
             return null;
         }
     };
+    /**
+     * Get the gems around the given position (horizontal/vertical).
+     */
     Grid.prototype.getAdjacentGems = function (column, line) {
         var adjacentGems = [];
         if (column > 0) {
@@ -305,6 +332,9 @@ var Grid = (function () {
         }
         return adjacentGems;
     };
+    /**
+     * Convert a column/line position to an x/y position.
+     */
     Grid.toCanvasPosition = function (column, line) {
         return {
             x: column * Gem.SIZE + Gem.SIZE / 2,
@@ -344,10 +374,20 @@ var Grid = (function () {
         }
         return null;
     };
+    /**
+     * Clear the grid.
+     */
     Grid.prototype.clear = function () {
         this.clearing = true;
+        this.grid.length = 0;
         Gem._CONTAINER.removeAllChildren();
     };
+    /**
+     * Deals with the game logic.
+     *     - Dropping the gems that have an empty position below.
+     *     - Add new gems at empty positions on the first line.
+     *     - Clear the gem chains, when there's no active animation.
+     */
     Grid.prototype.tick = function () {
         // drop the gems
         for (var column = 0; column < this.size; column++) {

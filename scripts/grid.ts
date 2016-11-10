@@ -139,10 +139,9 @@ newRandomGem( column: number, line: number )
     }
 
 
-/*
-    You can only switch 2 gems if they're adjacent with each other, and with a horizontal/vertical orientation
+/**
+ * Check if you can switch the given gems. You can only switch 2 gems if they're adjacent with each other, and with a horizontal/vertical orientation.
  */
-
 isValidSwitch( gem1: Gem, gem2: Gem )
     {
     var columnDiff = Math.abs( gem1.column - gem2.column );
@@ -158,6 +157,9 @@ isValidSwitch( gem1: Gem, gem2: Gem )
     }
 
 
+/**
+ * Try to switch the given gems. If its not possible, then the gems will switch back to the original position.
+ */
 switchGems( gem1: Gem, gem2: Gem )
     {
         // get the gem position before moving it (so we can then move the selected gem to this position)
@@ -204,6 +206,9 @@ switchGems( gem1: Gem, gem2: Gem )
     }
 
 
+/**
+ * Remove a gem from the grid.
+ */
 removeGem( column: number, line: number, callback?: () => any )
     {
     var _this = this;
@@ -221,6 +226,9 @@ removeGem( column: number, line: number, callback?: () => any )
     }
 
 
+/**
+ * Move a gem to a new position.
+ */
 moveGem( gem: Gem, column: number, line: number, callback?: () => any )
     {
     if ( column < 0 || column >= this.size ||
@@ -243,6 +251,9 @@ moveGem( gem: Gem, column: number, line: number, callback?: () => any )
     }
 
 
+/**
+ * Add a new random gem to the given position.
+ */
 addGem( column: number, line: number )
     {
     var _this = this;
@@ -258,6 +269,9 @@ addGem( column: number, line: number )
     }
 
 
+/**
+ * Find any gem chains/combinations and remove them (while adding to the score as well).
+ */
 clearChains(): boolean
     {
     if ( this.clearing )
@@ -266,7 +280,6 @@ clearChains(): boolean
         }
 
     var aChainCleared = this.checkForChains();
-
 
     if ( !aChainCleared )
         {
@@ -280,6 +293,9 @@ clearChains(): boolean
     }
 
 
+/**
+ * Clear the search flags from all the gems.
+ */
 clearGemFlags()
     {
     var size = this.size;
@@ -300,18 +316,15 @@ clearGemFlags()
     }
 
 
-
-/*
-    Checks for gem chains (3+ gems in horizontal/vertical line), and clears them
+/**
+ * Checks for gem chains (3+ gems in horizontal/vertical line), and clears them.
  */
-
 checkForChains(): boolean
     {
     var _this = this;
     var grid = this.grid;
     var size = this.size;
     var foundChains = false;
-
 
     var removeChain = function( endColumn: number, endLine: number, count: number, vertical: boolean )
         {
@@ -335,7 +348,6 @@ checkForChains(): boolean
         Game.addToScore( count * 10 );
         GameMenu.addToTimer( count );
         };
-
 
     for (var column = 0 ; column < size ; column++)
         {
@@ -419,6 +431,9 @@ checkForChains(): boolean
     }
 
 
+/**
+ * Check for a gem chain in the horizontal orientation.
+ */
 checkHorizontalChain( column: number, line: number ): GemChain | null
     {
     var size = this.size;
@@ -486,6 +501,10 @@ checkHorizontalChain( column: number, line: number ): GemChain | null
         }
     }
 
+
+/**
+ * Check for a gem chain in the vertical orientation.
+ */
 checkVerticalChain( column: number, line: number ): GemChain | null
     {
     var size = this.size;
@@ -554,6 +573,9 @@ checkVerticalChain( column: number, line: number ): GemChain | null
     }
 
 
+/**
+ * Get the gems around the given position (horizontal/vertical).
+ */
 getAdjacentGems( column: number, line: number )
     {
     var adjacentGems: Gem[] = [];
@@ -582,6 +604,9 @@ getAdjacentGems( column: number, line: number )
     }
 
 
+/**
+ * Convert a column/line position to an x/y position.
+ */
 static toCanvasPosition( column: number, line: number )
     {
     return {
@@ -639,6 +664,9 @@ isThereMoreValidMoves(): Gem | null
     }
 
 
+/**
+ * Clear the grid.
+ */
 clear()
     {
     this.clearing = true;
@@ -648,6 +676,12 @@ clear()
     }
 
 
+/**
+ * Deals with the game logic.
+ *     - Dropping the gems that have an empty position below.
+ *     - Add new gems at empty positions on the first line.
+ *     - Clear the gem chains, when there's no active animation.
+ */
 tick()
     {
         // drop the gems
@@ -676,9 +710,9 @@ tick()
             }
         }
 
-        if ( this.animated_count === 0 )
-            {
-            this.clearChains();
-            }
+    if ( this.animated_count === 0 )
+        {
+        this.clearChains();
+        }
     }
 }

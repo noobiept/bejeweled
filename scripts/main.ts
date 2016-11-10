@@ -23,6 +23,9 @@ interface GemChain {
 var G: Global;
 
 
+/**
+ * Start of the program.
+ */
 window.onload = function()
 {
     // setting up the canvas and stage
@@ -58,7 +61,6 @@ var manifest = {
             { id: 'orange_gem', src: 'orange_gem.png' }
         ]
     };
-
 
 G.PRELOAD.on( 'progress', function( event: createjs.ProgressEvent )
     {

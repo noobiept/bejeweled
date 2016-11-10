@@ -47,10 +47,16 @@ var Gem = (function () {
         this.shape = shape;
         this.id = id;
     }
+    /**
+     * Initialize the gem's container.
+     */
     Gem.init = function (stage) {
         Gem._CONTAINER = new createjs.Container();
         stage.addChild(Gem._CONTAINER);
     };
+    /**
+     * Position the gem in a position in the grid.
+     */
     Gem.prototype.positionIn = function (column, line) {
         this.column = column;
         this.line = line;
@@ -58,6 +64,9 @@ var Gem = (function () {
         this.shape.x = canvasPosition.x;
         this.shape.y = canvasPosition.y;
     };
+    /**
+     * Move the gem from the current position to a new one (with a move animation).
+     */
     Gem.prototype.moveTo = function (column, line, callback) {
         var _this = this;
         var canvasPosition = Grid.toCanvasPosition(column, line);
@@ -89,15 +98,27 @@ var Gem = (function () {
             }
         });
     };
+    /**
+     * Show the selection effect.
+     */
     Gem.prototype.setSelection = function (value) {
         this.selection.visible = value;
     };
+    /**
+     * Get the current 'x' position.
+     */
     Gem.prototype.getX = function () {
         return this.shape.x;
     };
+    /**
+     * Get the current 'y' position.
+     */
     Gem.prototype.getY = function () {
         return this.shape.y;
     };
+    /**
+     * Remove the gem with an animation. Callback is called when the animation ends.
+     */
     Gem.prototype.remove = function (callback) {
         var _this = this;
         this.being_animated = true;

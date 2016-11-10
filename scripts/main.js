@@ -7,6 +7,9 @@
 /// <reference path="message.ts" />
 /// <reference path="high_score.ts" />
 var G;
+/**
+ * Start of the program.
+ */
 window.onload = function () {
     // setting up the canvas and stage
     var canvas = document.querySelector('#MainCanvas');

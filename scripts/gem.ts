@@ -16,7 +16,6 @@ enum GemAction
     }
 
 
-
 class Gem
 {
 static _CONTAINER: createjs.Container;
@@ -27,12 +26,16 @@ static MOVEMENT_SPEED = 500;
 static TYPE_COUNT = Object.keys( GemType ).length / 2;
 
 
+/**
+ * Initialize the gem's container.
+ */
 static init( stage: createjs.Stage )
     {
     Gem._CONTAINER = new createjs.Container();
 
     stage.addChild( Gem._CONTAINER );
     }
+
 
 shape: createjs.Container;
 gem: createjs.Bitmap;
@@ -89,6 +92,9 @@ constructor( id: GemType )
     }
 
 
+/**
+ * Position the gem in a position in the grid.
+ */
 positionIn( column: number, line: number )
     {
     this.column = column;
@@ -101,6 +107,9 @@ positionIn( column: number, line: number )
     }
 
 
+/**
+ * Move the gem from the current position to a new one (with a move animation).
+ */
 moveTo( column: number, line: number, callback?: () => any )
     {
     var _this = this;
@@ -149,21 +158,36 @@ moveTo( column: number, line: number, callback?: () => any )
     }
 
 
+/**
+ * Show the selection effect.
+ */
 setSelection( value: boolean )
     {
     this.selection.visible = value;
     }
 
+
+/**
+ * Get the current 'x' position.
+ */
 getX()
     {
     return this.shape.x;
     }
 
+
+/**
+ * Get the current 'y' position.
+ */
 getY()
     {
     return this.shape.y;
     }
 
+
+/**
+ * Remove the gem with an animation. Callback is called when the animation ends.
+ */
 remove( callback?: () => any )
     {
     var _this = this;

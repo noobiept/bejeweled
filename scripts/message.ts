@@ -6,6 +6,9 @@ var BACKGROUND: createjs.Shape;
 var TIMEOUT: Utilities.Timeout;
 
 
+/**
+ * Initialize the message elements.
+ */
 export function init( stage: createjs.Stage )
     {
         // timeout
@@ -35,6 +38,9 @@ export function init( stage: createjs.Stage )
     }
 
 
+/**
+ * Show a message in the center of the canvas.
+ */
 export function show( text: string, timeout?: number, callback?: () => void )
     {
     TEXT.text = text;
@@ -55,6 +61,10 @@ export function show( text: string, timeout?: number, callback?: () => void )
         }
     }
 
+
+/**
+ * Hide the message.
+ */
 export function hide()
     {
     TIMEOUT.clear();
@@ -62,6 +72,9 @@ export function hide()
     }
 
 
+/**
+ * Draw the message's background, centered behind the message.
+ */
 function drawBackground()
     {
     var textHeight = TEXT.getMeasuredHeight() + 15;

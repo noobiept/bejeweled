@@ -4,6 +4,9 @@ var Message;
     var TEXT;
     var BACKGROUND;
     var TIMEOUT;
+    /**
+     * Initialize the message elements.
+     */
     function init(stage) {
         // timeout
         TIMEOUT = new Utilities.Timeout();
@@ -26,6 +29,9 @@ var Message;
         stage.addChild(CONTAINER);
     }
     Message.init = init;
+    /**
+     * Show a message in the center of the canvas.
+     */
     function show(text, timeout, callback) {
         TEXT.text = text;
         drawBackground();
@@ -40,11 +46,17 @@ var Message;
         }
     }
     Message.show = show;
+    /**
+     * Hide the message.
+     */
     function hide() {
         TIMEOUT.clear();
         CONTAINER.visible = false;
     }
     Message.hide = hide;
+    /**
+     * Draw the message's background, centered behind the message.
+     */
     function drawBackground() {
         var textHeight = TEXT.getMeasuredHeight() + 15;
         var canvas = G.CANVAS;
