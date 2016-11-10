@@ -48,21 +48,15 @@ export function gemClicked( gem: Gem )
         // no selection yet
     if ( SELECTED === null )
         {
-        SELECTED = gem;
-
-        gem.setSelection( true );
-        playSelectSound();
+        selectGem( gem );
         }
 
     else
         {
-            // clear the selection of previously selected gem
-        SELECTED.setSelection( false );
-
             // clicked the already selected gem, deselect
         if ( gem === SELECTED )
             {
-            SELECTED = null;
+            unselectGem();
             }
 
             // try to switch 2 gems
@@ -70,8 +64,7 @@ export function gemClicked( gem: Gem )
             {
             if ( SELECTED.being_animated || gem.being_animated )
                 {
-                SELECTED.setSelection( false );
-                SELECTED = null;
+                unselectGem();
                 return;
                 }
 
@@ -79,18 +72,40 @@ export function gemClicked( gem: Gem )
             if ( GRID!.isValidSwitch( gem, SELECTED ) )
                 {
                 GRID!.switchGems( gem, SELECTED );
-                SELECTED = null;
+                unselectGem();
                 }
 
             else
                 {
-                SELECTED = gem;
-
-                gem.setSelection( true );
-                playSelectSound();
+                selectGem( gem );
                 }
             }
         }
+    }
+
+
+function selectGem( gem: Gem )
+    {
+    if ( SELECTED )
+        {
+            // clear the selection of previously selected gem
+        SELECTED.setSelection( false );
+        }
+
+    SELECTED = gem;
+    gem.setSelection( true );
+    playSelectSound();
+    }
+
+
+function unselectGem()
+    {
+    if ( SELECTED )
+        {
+        SELECTED.setSelection( false );
+        }
+
+    SELECTED = null;
     }
 
 
@@ -117,6 +132,14 @@ export function restart()
     Message.hide();
 
     Game.start();
+    }
+
+
+export function help()
+    {
+    var gem = GRID!.isThereMoreValidMoves();
+
+    selectGem( gem! );
     }
 
 

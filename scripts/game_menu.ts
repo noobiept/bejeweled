@@ -10,11 +10,11 @@ export function init()
 
         // restart //
     var restart = <HTMLElement> container.querySelector( '#Restart' );
+    restart.onclick = Game.restart;
 
-    restart.onclick = function()
-        {
-        Game.restart();
-        };
+        // help //
+    var help = <HTMLElement> document.getElementById( 'Help' );
+    help.onclick = Game.help;
 
         // score //
     SCORE = <HTMLElement> container.querySelector( '#Score' );

@@ -508,7 +508,7 @@ static toCanvasPosition( column: number, line: number )
        |  x |   x |  x  |   x |  x  |  x  |   x
      x |  x |     |     |     |     |     |
  */
-isThereMoreValidMoves(): boolean
+isThereMoreValidMoves()
     {
     var moves = [   //HERE make this static
             [
@@ -603,13 +603,13 @@ isThereMoreValidMoves(): boolean
                 if ( (grid[ oneColumn ] && grid[ oneColumn ][ oneLine ] && grid[ oneColumn ][ oneLine ]!.id === gemId) &&
                      (grid[ twoColumn ] && grid[ twoColumn ][ twoLine ] && grid[ twoColumn ][ twoLine ]!.id === gemId) )
                     {
-                    return true;
+                    return gem;
                     }
                 }
             }
         }
 
-    return false;
+    return null;
     }
 
 

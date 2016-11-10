@@ -34,37 +34,45 @@ var Game;
     function gemClicked(gem) {
         // no selection yet
         if (SELECTED === null) {
-            SELECTED = gem;
-            gem.setSelection(true);
-            playSelectSound();
+            selectGem(gem);
         }
         else {
-            // clear the selection of previously selected gem
-            SELECTED.setSelection(false);
             // clicked the already selected gem, deselect
             if (gem === SELECTED) {
-                SELECTED = null;
+                unselectGem();
             }
             else {
                 if (SELECTED.being_animated || gem.being_animated) {
-                    SELECTED.setSelection(false);
-                    SELECTED = null;
+                    unselectGem();
                     return;
                 }
                 // can only switch adjacent gems
                 if (GRID.isValidSwitch(gem, SELECTED)) {
                     GRID.switchGems(gem, SELECTED);
-                    SELECTED = null;
+                    unselectGem();
                 }
                 else {
-                    SELECTED = gem;
-                    gem.setSelection(true);
-                    playSelectSound();
+                    selectGem(gem);
                 }
             }
         }
     }
     Game.gemClicked = gemClicked;
+    function selectGem(gem) {
+        if (SELECTED) {
+            // clear the selection of previously selected gem
+            SELECTED.setSelection(false);
+        }
+        SELECTED = gem;
+        gem.setSelection(true);
+        playSelectSound();
+    }
+    function unselectGem() {
+        if (SELECTED) {
+            SELECTED.setSelection(false);
+        }
+        SELECTED = null;
+    }
     function addToScore(score) {
         SCORE += score;
         GameMenu.updateScore(SCORE);
@@ -82,6 +90,11 @@ var Game;
         Game.start();
     }
     Game.restart = restart;
+    function help() {
+        var gem = GRID.isThereMoreValidMoves();
+        selectGem(gem);
+    }
+    Game.help = help;
     function over() {
         GAME_OVER = true;
         var score = Game.getScore();

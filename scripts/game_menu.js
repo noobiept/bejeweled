@@ -7,9 +7,10 @@ var GameMenu;
         var container = document.querySelector('#GameMenu');
         // restart //
         var restart = container.querySelector('#Restart');
-        restart.onclick = function () {
-            Game.restart();
-        };
+        restart.onclick = Game.restart;
+        // help //
+        var help = document.getElementById('Help');
+        help.onclick = Game.help;
         // score //
         SCORE = container.querySelector('#Score');
         // timer //

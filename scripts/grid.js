@@ -409,12 +409,12 @@ var Grid = (function () {
                     var twoLine = line + two.lineOffset;
                     if ((grid[oneColumn] && grid[oneColumn][oneLine] && grid[oneColumn][oneLine].id === gemId) &&
                         (grid[twoColumn] && grid[twoColumn][twoLine] && grid[twoColumn][twoLine].id === gemId)) {
-                        return true;
+                        return gem;
                     }
                 }
             }
         }
-        return false;
+        return null;
     };
     Grid.prototype.clear = function () {
         this.clearing = true;
