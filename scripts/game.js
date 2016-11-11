@@ -97,16 +97,10 @@ var Game;
     }
     Game.addToScore = addToScore;
     /**
-     * Get the current score.
-     */
-    function getScore() {
-        return SCORE;
-    }
-    Game.getScore = getScore;
-    /**
      * Clear the current game, and start a new one.
      */
     function restart() {
+        HighScore.add(SCORE);
         GRID.clear();
         GRID = null;
         SCORE = 0;
@@ -130,9 +124,7 @@ var Game;
      */
     function over(message) {
         GAME_OVER = true;
-        var score = Game.getScore();
-        HighScore.add(score);
-        Message.show(message + '\nScore: ' + score, 2000, function () {
+        Message.show(message + '\nScore: ' + SCORE, 2000, function () {
             Game.restart();
         });
     }

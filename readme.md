@@ -28,9 +28,9 @@ Sounds
 Dependencies
 ============
 
-- typescript: `2.0`
-- createjs
+- [typescript](https://www.typescriptlang.org/): `2.0`
+- [createjs](http://www.createjs.com/)
     - easeljs: `0.8`
     - preloadjs: `0.6`
     - tweenjs: `0.6`
-- utilities: `1.4`
+- [utilities](https://bitbucket.org/drk4/javascript_utilities): `1.4`

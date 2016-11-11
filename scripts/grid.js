@@ -50,6 +50,7 @@ var Grid = (function () {
         var _this = this;
         this.grid[gem1_column][gem1_line] = gem2;
         this.grid[gem2_column][gem2_line] = gem1;
+        this.animated_count++;
         gem1.moveTo(gem2_column, gem2_line);
         gem2.moveTo(gem1_column, gem1_line, function () {
             // if it doesn't lead to a chain, we need to move it back
@@ -64,7 +65,12 @@ var Grid = (function () {
                 _this.grid[gem1_column][gem1_line] = gem1;
                 _this.grid[gem2_column][gem2_line] = gem2;
                 gem1.moveTo(gem1_column, gem1_line);
-                gem2.moveTo(gem2_column, gem2_line);
+                gem2.moveTo(gem2_column, gem2_line, function () {
+                    _this.animated_count--;
+                });
+            }
+            else {
+                _this.animated_count--;
             }
         });
     };

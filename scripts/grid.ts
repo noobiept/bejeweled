@@ -181,6 +181,8 @@ switchGems( gem1: Gem, gem2: Gem )
     this.grid[ gem1_column ][ gem1_line ] = gem2;
     this.grid[ gem2_column ][ gem2_line ] = gem1;
 
+    this.animated_count++;
+
     gem1.moveTo( gem2_column, gem2_line );
     gem2.moveTo( gem1_column, gem1_line, function()
         {
@@ -200,7 +202,15 @@ switchGems( gem1: Gem, gem2: Gem )
             _this.grid[ gem2_column ][ gem2_line ] = gem2;
 
             gem1.moveTo( gem1_column, gem1_line );
-            gem2.moveTo( gem2_column, gem2_line );
+            gem2.moveTo( gem2_column, gem2_line, function()
+                {
+                _this.animated_count--;
+                });
+            }
+
+        else
+            {
+            _this.animated_count--;
             }
         });
     }

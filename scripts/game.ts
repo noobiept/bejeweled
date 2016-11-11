@@ -136,19 +136,12 @@ export function addToScore( score: number )
 
 
 /**
- * Get the current score.
- */
-export function getScore()
-    {
-    return SCORE;
-    }
-
-
-/**
  * Clear the current game, and start a new one.
  */
 export function restart()
     {
+    HighScore.add( SCORE );
+
     GRID!.clear();
     GRID = null;
 
@@ -181,10 +174,7 @@ export function over( message: string )
     {
     GAME_OVER = true;
 
-    var score = Game.getScore();
-    HighScore.add( score );
-
-    Message.show( message + '\nScore: ' + score, 2000, function()
+    Message.show( message + '\nScore: ' + SCORE, 2000, function()
         {
         Game.restart();
         });
