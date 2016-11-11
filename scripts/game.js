@@ -121,6 +121,7 @@ var Game;
         var gem = GRID.isThereMoreValidMoves();
         if (gem) {
             selectGem(gem);
+            Game.addToScore(-50);
         }
     }
     Game.help = help;

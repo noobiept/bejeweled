@@ -169,6 +169,7 @@ export function help()
     if ( gem )
         {
         selectGem( gem );
+        Game.addToScore( -50 );
         }
     }
 

@@ -1,29 +1,32 @@
 module.exports = function( grunt )
 {
-var root = '../';
-var dest = '../release/<%= pkg.name %> <%= pkg.version %>/';
+var root = './';
+var dest = 'release/<%= pkg.name %> <%= pkg.version %>/';
+var temp = 'temp/';
 
 grunt.initConfig({
         pkg: grunt.file.readJSON( 'package.json' ),
 
-            // delete the destination folder
+            // delete the destination and temporary folders
         clean: {
-            options: {
-                force: true
-            },
-            release: [
+            previousBuild: [
                 dest
+            ],
+            afterBuild: [
+                temp,
+                '.tscache'
             ]
         },
 
-            // copy the audio and libraries files
+            // copy the necessary files
         copy: {
             release: {
                 expand: true,
                 cwd: root,
                 src: [
                     'images/*.png',
-                    'libraries/**'
+                    'libraries/**',
+                    'sounds/**'
                 ],
                 dest: dest
             }
@@ -33,10 +36,14 @@ grunt.initConfig({
         ts: {
             release: {
                 src: [ root + 'scripts/*.ts' ],
-                dest: 'temp/code.js',
+                dest: temp + 'code.js',
                 options: {
-                    sourceMap: false,
-                    target: "es5"
+                    "noImplicitAny": true,
+                    "noImplicitReturns": true,
+                    "noImplicitThis": true,
+                    "noUnusedLocals": true,
+                    "strictNullChecks": true,
+                    "target": "es5"
                 }
             }
         },
@@ -44,7 +51,7 @@ grunt.initConfig({
         uglify: {
             release: {
                 files: [{
-                    src: 'temp/code.js',
+                    src: temp + 'code.js',
                     dest: dest + 'min.js'
                 }]
             }
@@ -85,5 +92,5 @@ grunt.loadNpmTasks( 'grunt-contrib-clean' );
 grunt.loadNpmTasks( 'grunt-processhtml' );
 
     // tasks
-grunt.registerTask( 'default', [ 'clean', 'ts', 'copy', 'uglify', 'cssmin', 'processhtml' ] );
+grunt.registerTask( 'default', [ 'clean:previousBuild', 'ts', 'copy', 'uglify', 'cssmin', 'processhtml', 'clean:afterBuild' ] );
 };
