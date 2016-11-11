@@ -17,9 +17,9 @@ export function init()
     G.CANVAS.width = GRID_SIZE * Gem.SIZE;
     G.CANVAS.height = GRID_SIZE * Gem.SIZE;
 
-    SELECT_SOUND = new Audio( '../sounds/select.wav' );
+    SELECT_SOUND = new Audio( 'sounds/select.wav' );
     SELECT_SOUND.load();
-    COMBINE_SOUND = new Audio( '../sounds/combine.wav' );
+    COMBINE_SOUND = new Audio( 'sounds/combine.wav' );
     COMBINE_SOUND.load();
 
     createjs.Ticker.on( 'tick', function( event )
