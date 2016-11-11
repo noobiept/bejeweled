@@ -1,11 +1,4 @@
-/// <reference path="../typings/browser.d.ts" />
-/// <reference path="../typings/utilities-1.4.d.ts" />
-/// <reference path="gem.ts" />
-/// <reference path="grid.ts" />
-/// <reference path="game.ts" />
-/// <reference path="game_menu.ts" />
-/// <reference path="message.ts" />
-/// <reference path="high_score.ts" />
+/// <reference path="../libraries/utilities-1.4.d.ts" />
 
 interface Global {
     CANVAS: HTMLCanvasElement;
