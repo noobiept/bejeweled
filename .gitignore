@@ -2,3 +2,4 @@
 /info.txt
 /release/
 node_modules/
+/source/**/*.js

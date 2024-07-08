@@ -7,4 +7,7 @@ export default [
     { languageOptions: { globals: globals.browser } },
     pluginJs.configs.recommended,
     ...tsEslint.configs.recommended,
+    {
+        ignores: ["source/**/*.js"],
+    },
 ];
