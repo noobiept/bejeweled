@@ -1,89 +1,81 @@
-module Message
-{
+import { isNumber, Timeout } from "@drk4/utilities";
+
 var CONTAINER: createjs.Container;
 var TEXT: createjs.Text;
 var BACKGROUND: createjs.Shape;
 var TIMEOUT: Utilities.Timeout;
 
+let getCW: () => number; // TODO
 
 /**
  * Initialize the message elements.
  */
-export function init( stage: createjs.Stage )
-    {
-        // timeout
-    TIMEOUT = new Utilities.Timeout();
+export function init(stage: createjs.Stage, getCanvasWidth: () => number) {
+    // timeout
+    TIMEOUT = new Timeout();
 
-        // canvas
-    var canvas = <HTMLCanvasElement> stage.canvas;
+    getCW = getCanvasWidth;
+
+    // canvas
+    var canvas = <HTMLCanvasElement>stage.canvas;
     var halfWidth = canvas.width / 2;
     var halfHeight = canvas.height / 2;
 
-        // background
+    // background
     BACKGROUND = new createjs.Shape();
 
-        // text
-    TEXT = new createjs.Text( '', '30px monospace' );
-    TEXT.textAlign = 'center';
+    // text
+    TEXT = new createjs.Text("", "30px monospace");
+    TEXT.textAlign = "center";
 
-        // container
+    // container
     CONTAINER = new createjs.Container();
-    CONTAINER.addChild( BACKGROUND );
-    CONTAINER.addChild( TEXT );
+    CONTAINER.addChild(BACKGROUND);
+    CONTAINER.addChild(TEXT);
     CONTAINER.visible = false;
     CONTAINER.x = halfWidth;
     CONTAINER.y = halfHeight;
 
-    stage.addChild( CONTAINER );
-    }
-
+    stage.addChild(CONTAINER);
+}
 
 /**
  * Show a message in the center of the canvas.
  */
-export function show( text: string, timeout?: number, callback?: () => void )
-    {
+export function show(text: string, timeout?: number, callback?: () => void) {
     TEXT.text = text;
     drawBackground();
     CONTAINER.visible = true;
 
-    if ( Utilities.isNumber( timeout ) )
-        {
-        TIMEOUT.start( function()
-            {
+    if (isNumber(timeout)) {
+        TIMEOUT.start(function () {
             CONTAINER.visible = false;
 
-            if ( callback )
-                {
+            if (callback) {
                 callback();
-                }
-            }, timeout! );
-        }
+            }
+        }, timeout!);
     }
-
+}
 
 /**
  * Hide the message.
  */
-export function hide()
-    {
+export function hide() {
     TIMEOUT.clear();
     CONTAINER.visible = false;
-    }
-
+}
 
 /**
  * Draw the message's background, centered behind the message.
  */
-function drawBackground()
-    {
-    var textHeight = TEXT.getMeasuredHeight() + 15;
-    var canvas = G.CANVAS;
+function drawBackground() {
+    const textHeight = TEXT.getMeasuredHeight() + 15;
+    const canvasWidth = getCW();
 
     var g = BACKGROUND.graphics;
 
-    g.beginFill( '#B8CEB9' );
-    g.drawRect( -canvas.width / 2, 0, canvas.width, textHeight );
+    g.beginFill("#B8CEB9");
+    g.drawRect(-canvasWidth / 2, 0, canvasWidth, textHeight);
     g.endFill();
-    }
 }
