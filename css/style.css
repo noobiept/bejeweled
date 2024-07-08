@@ -1,48 +1,39 @@
-body
-    {
+body {
     text-align: center;
     background-color: rgb(245, 245, 245);
-    }
+}
 
-ul
-    {
+ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
-    }
+}
 
-#GameMenu
-    {
+#GameMenu {
     visibility: hidden;
     margin-top: 10px;
-    }
+}
 
-#GameMenu > :first-child
-    {
+#GameMenu > :first-child {
     margin: 10px;
-    }
+}
 
-#GameMenu ul > *
-    {
+#GameMenu ul > * {
     display: inline-block;
     padding: 0 15px;
-    }
+}
 
-.button
-    {
+.button {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 110%;
     cursor: pointer;
+}
 
-    }
-
-.button:hover
-    {
+.button:hover {
     background-color: #ceb19e;
-    }
+}
 
-.value
-    {
+.value {
     font-weight: bold;
     color: darkblue;
-    }
+}
