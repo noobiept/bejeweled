@@ -8,5 +8,5 @@
         "strictNullChecks": true,
         "target": "es5"
     },
-    "include": ["scripts/**/*"]
+    "include": ["source/**/*"]
 }
