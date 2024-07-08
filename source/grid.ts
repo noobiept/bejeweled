@@ -2,6 +2,7 @@ import { getRandomInt } from "@drk4/utilities";
 import { Gem } from "./gem";
 import * as Game from "./game";
 import * as GameMenu from "./game_menu";
+import type { GemChain, GemType } from "./types";
 
 export class Grid {
     /*
@@ -114,11 +115,11 @@ export class Grid {
         this.size = size;
         this.clearing = false;
 
-        for (var column = 0; column < size; column++) {
+        for (let column = 0; column < size; column++) {
             this.grid[column] = [];
 
-            for (var line = 0; line < size; line++) {
-                var gem = this.newRandomGem(column, line);
+            for (let line = 0; line < size; line++) {
+                const gem = this.newRandomGem(column, line);
                 this.grid[column][line] = gem;
             }
         }
@@ -140,8 +141,8 @@ export class Grid {
      * Check if you can switch the given gems. You can only switch 2 gems if they're adjacent with each other, and with a horizontal/vertical orientation.
      */
     isValidSwitch(gem1: Gem, gem2: Gem) {
-        var columnDiff = Math.abs(gem1.column - gem2.column);
-        var lineDiff = Math.abs(gem1.line - gem2.line);
+        const columnDiff = Math.abs(gem1.column - gem2.column);
+        const lineDiff = Math.abs(gem1.line - gem2.line);
 
         if (
             (columnDiff === 0 && lineDiff === 1) ||
@@ -158,11 +159,11 @@ export class Grid {
      */
     switchGems(gem1: Gem, gem2: Gem) {
         // get the gem position before moving it (so we can then move the selected gem to this position)
-        var gem1_column = gem1.column;
-        var gem1_line = gem1.line;
+        const gem1_column = gem1.column;
+        const gem1_line = gem1.line;
 
-        var gem2_column = gem2.column;
-        var gem2_line = gem2.line;
+        const gem2_column = gem2.column;
+        const gem2_line = gem2.line;
 
         // switch the gems, and check if it leads to a chain
         gem1.column = gem2_column;
@@ -171,21 +172,19 @@ export class Grid {
         gem2.column = gem1_column;
         gem2.line = gem1_line;
 
-        var _this = this;
-
         this.grid[gem1_column][gem1_line] = gem2;
         this.grid[gem2_column][gem2_line] = gem1;
 
         this.animated_count++;
 
         gem1.moveTo(gem2_column, gem2_line);
-        gem2.moveTo(gem1_column, gem1_line, function () {
+        gem2.moveTo(gem1_column, gem1_line, () => {
             // if it doesn't lead to a chain, we need to move it back
             if (
-                _this.checkHorizontalChain(gem1_column, gem1_line) === null &&
-                _this.checkVerticalChain(gem1_column, gem1_line) === null &&
-                _this.checkHorizontalChain(gem2_column, gem2_line) === null &&
-                _this.checkVerticalChain(gem2_column, gem2_line) === null
+                this.checkHorizontalChain(gem1_column, gem1_line) === null &&
+                this.checkVerticalChain(gem1_column, gem1_line) === null &&
+                this.checkHorizontalChain(gem2_column, gem2_line) === null &&
+                this.checkVerticalChain(gem2_column, gem2_line) === null
             ) {
                 gem1.column = gem1_column;
                 gem1.line = gem1_line;
@@ -193,15 +192,15 @@ export class Grid {
                 gem2.column = gem2_column;
                 gem2.line = gem2_line;
 
-                _this.grid[gem1_column][gem1_line] = gem1;
-                _this.grid[gem2_column][gem2_line] = gem2;
+                this.grid[gem1_column][gem1_line] = gem1;
+                this.grid[gem2_column][gem2_line] = gem2;
 
                 gem1.moveTo(gem1_column, gem1_line);
-                gem2.moveTo(gem2_column, gem2_line, function () {
-                    _this.animated_count--;
+                gem2.moveTo(gem2_column, gem2_line, () => {
+                    this.animated_count--;
                 });
             } else {
-                _this.animated_count--;
+                this.animated_count--;
             }
         });
     }
@@ -209,15 +208,14 @@ export class Grid {
     /**
      * Remove a gem from the grid.
      */
-    removeGem(column: number, line: number, callback?: () => any) {
-        var _this = this;
-        var gem = this.grid[column][line];
+    removeGem(column: number, line: number) {
+        const gem = this.grid[column][line];
         this.animated_count++;
 
         if (gem !== null) {
-            gem.remove(function () {
-                _this.grid[column][line] = null;
-                _this.animated_count--;
+            gem.remove(() => {
+                this.grid[column][line] = null;
+                this.animated_count--;
             });
         }
     }
@@ -225,7 +223,7 @@ export class Grid {
     /**
      * Move a gem to a new position.
      */
-    moveGem(gem: Gem, column: number, line: number, callback?: () => any) {
+    moveGem(gem: Gem, column: number, line: number) {
         if (
             column < 0 ||
             column >= this.size ||
@@ -235,30 +233,28 @@ export class Grid {
             return;
         }
 
-        var _this = this;
-        var previousColumn = gem.column;
-        var previousLine = gem.line;
+        const previousColumn = gem.column;
+        const previousLine = gem.line;
         this.animated_count++;
 
-        gem.moveTo(column, line, function () {
-            _this.grid[previousColumn][previousLine] = null;
-            _this.grid[column][line] = gem;
-            _this.animated_count--;
+        gem.moveTo(column, line, () => {
+            this.grid[previousColumn][previousLine] = null;
+            this.grid[column][line] = gem;
+            this.animated_count--;
         });
     }
 
     /**
      * Add a new random gem to the given position.
      */
-    addGem(column: number, line: number) {
-        var _this = this;
+    addGem(column: number) {
         this.animated_count++;
 
-        var gem = this.newRandomGem(column, -1);
-        _this.grid[column][0] = gem;
+        const gem = this.newRandomGem(column, -1);
+        this.grid[column][0] = gem;
 
-        gem.moveTo(column, 0, function () {
-            _this.animated_count--;
+        gem.moveTo(column, 0, () => {
+            this.animated_count--;
         });
     }
 
@@ -270,7 +266,7 @@ export class Grid {
             return false;
         }
 
-        var aChainCleared = this.checkForChains();
+        const aChainCleared = this.checkForChains();
 
         if (!aChainCleared) {
             if (!this.isThereMoreValidMoves()) {
@@ -285,11 +281,11 @@ export class Grid {
      * Clear the search flags from all the gems.
      */
     clearGemFlags() {
-        var size = this.size;
+        const size = this.size;
 
-        for (var column = 0; column < size; column++) {
-            for (var line = 0; line < size; line++) {
-                var gem = this.grid[column][line];
+        for (let column = 0; column < size; column++) {
+            for (let line = 0; line < size; line++) {
+                const gem = this.grid[column][line];
 
                 if (gem) {
                     gem.already_checked_horizontal = false;
@@ -303,28 +299,27 @@ export class Grid {
      * Checks for gem chains (3+ gems in horizontal/vertical line), and clears them.
      */
     checkForChains(): boolean {
-        var _this = this;
-        var grid = this.grid;
-        var size = this.size;
-        var foundChains = false;
+        const grid = this.grid;
+        const size = this.size;
+        let foundChains = false;
 
-        var removeChain = function (
+        const removeChain = (
             endColumn: number,
             endLine: number,
             count: number,
             vertical: boolean
-        ) {
+        ) => {
             if (vertical === true) {
-                for (var line = endLine; line > endLine - count; line--) {
-                    _this.removeGem(endColumn, line);
+                for (let line = endLine; line > endLine - count; line--) {
+                    this.removeGem(endColumn, line);
                 }
             } else {
                 for (
-                    var column = endColumn;
+                    let column = endColumn;
                     column > endColumn - count;
                     column--
                 ) {
-                    _this.removeGem(column, endLine);
+                    this.removeGem(column, endLine);
                 }
             }
 
@@ -333,21 +328,21 @@ export class Grid {
             GameMenu.addToTimer(count);
         };
 
-        for (var column = 0; column < size; column++) {
-            for (var line = 0; line < size; line++) {
-                var referenceGem = grid[column][line];
+        for (let column = 0; column < size; column++) {
+            for (let line = 0; line < size; line++) {
+                const referenceGem = grid[column][line];
 
                 if (!referenceGem) {
                     continue;
                 }
 
-                var horizontalChains: GemChain[] = [];
-                var verticalChains: GemChain[] = [];
+                const horizontalChains: GemChain[] = [];
+                const verticalChains: GemChain[] = [];
 
                 // search for gem chains
                 // uses a flood fill algorithm, to determine the connected chains (of the same id as the starting gem)
                 // we have two flags for horizontal and vertical orientation, to know if we already checked the gem
-                var check = function (gem: Gem, id: GemType) {
+                const check = (gem: Gem, id: GemType) => {
                     if (
                         !gem ||
                         gem.id !== id ||
@@ -358,7 +353,7 @@ export class Grid {
                     }
 
                     if (!gem.already_checked_horizontal) {
-                        var chain = _this.checkHorizontalChain(
+                        const chain = this.checkHorizontalChain(
                             gem.column,
                             gem.line
                         );
@@ -370,7 +365,10 @@ export class Grid {
                     }
 
                     if (!gem.already_checked_vertical) {
-                        chain = _this.checkVerticalChain(gem.column, gem.line);
+                        const chain = this.checkVerticalChain(
+                            gem.column,
+                            gem.line
+                        );
                         if (chain !== null) {
                             verticalChains.push(chain);
                         }
@@ -378,19 +376,22 @@ export class Grid {
                         gem.already_checked_vertical = true;
                     }
 
-                    var adjacents = _this.getAdjacentGems(gem.column, gem.line);
+                    const adjacents = this.getAdjacentGems(
+                        gem.column,
+                        gem.line
+                    );
 
-                    for (var a = 0; a < adjacents.length; a++) {
+                    for (let a = 0; a < adjacents.length; a++) {
                         check(adjacents[a], id);
                     }
                 };
 
                 check(referenceGem, referenceGem.id);
 
-                for (var a = 0; a < horizontalChains.length; a++) {
+                for (let a = 0; a < horizontalChains.length; a++) {
                     foundChains = true;
 
-                    var chain = horizontalChains[a];
+                    const chain = horizontalChains[a];
                     removeChain(
                         chain.column + chain.size - 1,
                         chain.line,
@@ -399,10 +400,10 @@ export class Grid {
                     );
                 }
 
-                for (var a = 0; a < verticalChains.length; a++) {
+                for (let a = 0; a < verticalChains.length; a++) {
                     foundChains = true;
 
-                    var chain = verticalChains[a];
+                    const chain = verticalChains[a];
                     removeChain(
                         chain.column,
                         chain.line + chain.size - 1,
@@ -422,22 +423,19 @@ export class Grid {
      * Check for a gem chain in the horizontal orientation.
      */
     checkHorizontalChain(column: number, line: number): GemChain | null {
-        var size = this.size;
-        var grid = this.grid;
-        var countLeft = 0;
-        var countRight = 0;
-        var referenceGem = grid[column][line];
+        const size = this.size;
+        const grid = this.grid;
+        let countLeft = 0;
+        let countRight = 0;
+        const referenceGem = grid[column][line];
 
         if (!referenceGem) {
             return null;
         }
 
-        var a = 0;
-        var gem: Gem | null;
-
         // count to the right
-        for (a = column + 1; a < size; a++) {
-            gem = grid[a][line];
+        for (let a = column + 1; a < size; a++) {
+            const gem = grid[a][line];
 
             if (gem && gem.id === referenceGem.id) {
                 gem.already_checked_horizontal = true;
@@ -448,8 +446,8 @@ export class Grid {
         }
 
         // count to the left
-        for (a = column - 1; a >= 0; a--) {
-            gem = grid[a][line];
+        for (let a = column - 1; a >= 0; a--) {
+            const gem = grid[a][line];
 
             if (gem && gem.id === referenceGem.id) {
                 gem.already_checked_horizontal = true;
@@ -459,7 +457,7 @@ export class Grid {
             }
         }
 
-        var count = countLeft + countRight + 1;
+        const count = countLeft + countRight + 1;
 
         if (count >= 3) {
             return {
@@ -476,22 +474,19 @@ export class Grid {
      * Check for a gem chain in the vertical orientation.
      */
     checkVerticalChain(column: number, line: number): GemChain | null {
-        var size = this.size;
-        var grid = this.grid;
-        var countUp = 0;
-        var countDown = 0;
-        var referenceGem = this.grid[column][line];
+        const size = this.size;
+        const grid = this.grid;
+        let countUp = 0;
+        let countDown = 0;
+        const referenceGem = this.grid[column][line];
 
         if (!referenceGem) {
             return null;
         }
 
-        var a = 0;
-        var gem: Gem | null;
-
         // count up
-        for (a = line - 1; a >= 0; a--) {
-            gem = grid[column][a];
+        for (let a = line - 1; a >= 0; a--) {
+            const gem = grid[column][a];
 
             if (gem && gem.id === referenceGem.id) {
                 gem.already_checked_vertical = true;
@@ -502,8 +497,8 @@ export class Grid {
         }
 
         // count down
-        for (a = line + 1; a < size; a++) {
-            gem = grid[column][a];
+        for (let a = line + 1; a < size; a++) {
+            const gem = grid[column][a];
 
             if (gem && gem.id === referenceGem.id) {
                 gem.already_checked_vertical = true;
@@ -513,7 +508,7 @@ export class Grid {
             }
         }
 
-        var count = countDown + countUp + 1;
+        const count = countDown + countUp + 1;
 
         if (count >= 3) {
             return {
@@ -530,7 +525,7 @@ export class Grid {
      * Get the gems around the given position (horizontal/vertical).
      */
     getAdjacentGems(column: number, line: number) {
-        var adjacentGems: Gem[] = [];
+        const adjacentGems: Gem[] = [];
 
         if (column > 0) {
             adjacentGems.push(this.grid[column - 1][line]!);
@@ -567,28 +562,28 @@ export class Grid {
      */
     isThereMoreValidMoves(): Gem | null {
         // loop here over the moves, for each gem
-        var size = this.size;
-        var grid = this.grid;
-        var movesSize = Grid.ValidMoves.length;
+        const size = this.size;
+        const grid = this.grid;
+        const movesSize = Grid.ValidMoves.length;
 
-        for (var column = 0; column < size; column++) {
-            for (var line = 0; line < size; line++) {
-                var gem = grid[column][line];
+        for (let column = 0; column < size; column++) {
+            for (let line = 0; line < size; line++) {
+                const gem = grid[column][line];
 
                 if (!gem) {
                     continue;
                 }
 
-                var gemId = gem.id;
+                const gemId = gem.id;
 
-                for (var a = 0; a < movesSize; a++) {
-                    var move = Grid.ValidMoves[a];
-                    var one = move.one;
-                    var two = move.two;
-                    var oneColumn = column + one.columnOffset;
-                    var oneLine = line + one.lineOffset;
-                    var twoColumn = column + two.columnOffset;
-                    var twoLine = line + two.lineOffset;
+                for (let a = 0; a < movesSize; a++) {
+                    const move = Grid.ValidMoves[a];
+                    const one = move.one;
+                    const two = move.two;
+                    const oneColumn = column + one.columnOffset;
+                    const oneLine = line + one.lineOffset;
+                    const twoColumn = column + two.columnOffset;
+                    const twoLine = line + two.lineOffset;
 
                     if (
                         grid[oneColumn] &&
@@ -627,10 +622,10 @@ export class Grid {
      */
     tick() {
         // drop the gems
-        for (var column = 0; column < this.size; column++) {
-            for (var line = this.size - 1; line >= 0; line--) {
-                var gem = this.grid[column][line];
-                var below = this.grid[column][line + 1];
+        for (let column = 0; column < this.size; column++) {
+            for (let line = this.size - 1; line >= 0; line--) {
+                const gem = this.grid[column][line];
+                const below = this.grid[column][line + 1];
 
                 if (gem && !gem.being_animated && !below) {
                     this.moveGem(gem, gem.column, gem.line + 1);
@@ -639,11 +634,11 @@ export class Grid {
         }
 
         // add new gems at the top (if empty)
-        for (var column = 0; column < this.size; column++) {
-            var gem = this.grid[column][0];
+        for (let column = 0; column < this.size; column++) {
+            const gem = this.grid[column][0];
 
             if (!gem) {
-                this.addGem(column, 0);
+                this.addGem(column);
             }
         }
 

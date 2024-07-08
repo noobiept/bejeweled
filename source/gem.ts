@@ -2,21 +2,7 @@ import { Grid } from "./grid";
 import { getAsset } from "./preload";
 
 import * as Game from "./game";
-
-enum GemType {
-    green_gem,
-    blue_gem,
-    gray_gem,
-    purple_gem,
-    yellow_gem,
-    red_gem,
-    orange_gem,
-}
-
-enum GemAction {
-    move,
-    remove,
-}
+import { GemType } from "./types";
 
 export class Gem {
     static _CONTAINER: createjs.Container;
@@ -46,20 +32,20 @@ export class Gem {
     being_animated = false;
 
     constructor(id: GemType) {
-        var _this = this;
-
-        var shape = new createjs.Container();
-        var gem = new createjs.Bitmap(<HTMLImageElement>getAsset(GemType[id]));
-        var selection = new createjs.Bitmap(
+        const shape = new createjs.Container();
+        const gem = new createjs.Bitmap(
+            <HTMLImageElement>getAsset(GemType[id])
+        );
+        const selection = new createjs.Bitmap(
             <HTMLImageElement>getAsset("gem_selected")
         );
 
         selection.visible = false;
 
         // define the area that triggers the click event
-        var hitArea = new createjs.Shape();
+        const hitArea = new createjs.Shape();
 
-        var g = hitArea.graphics;
+        const g = hitArea.graphics;
 
         g.beginFill("black"); // its not added to the display list
         g.drawRect(0, 0, Gem.SIZE, Gem.SIZE);
@@ -68,9 +54,9 @@ export class Gem {
         shape.regX = Gem.SIZE / 2;
         shape.regY = Gem.SIZE / 2;
         shape.hitArea = hitArea;
-        shape.on("click", function () {
-            if (!_this.being_animated) {
-                Game.gemClicked(_this);
+        shape.on("click", () => {
+            if (!this.being_animated) {
+                Game.gemClicked(this);
             }
         });
 
@@ -94,7 +80,7 @@ export class Gem {
         this.column = column;
         this.line = line;
 
-        var canvasPosition = Grid.toCanvasPosition(column, line);
+        const canvasPosition = Grid.toCanvasPosition(column, line);
 
         this.shape.x = canvasPosition.x;
         this.shape.y = canvasPosition.y;
@@ -103,13 +89,11 @@ export class Gem {
     /**
      * Move the gem from the current position to a new one (with a move animation).
      */
-    moveTo(column: number, line: number, callback?: () => any) {
-        var _this = this;
-
-        var canvasPosition = Grid.toCanvasPosition(column, line);
-        var distanceY = Math.abs(this.line - line) * Gem.SIZE;
-        var distanceX = Math.abs(this.column - column) * Gem.SIZE;
-        var distance: number;
+    moveTo(column: number, line: number, callback?: () => void) {
+        const canvasPosition = Grid.toCanvasPosition(column, line);
+        const distanceY = Math.abs(this.line - line) * Gem.SIZE;
+        const distanceX = Math.abs(this.column - column) * Gem.SIZE;
+        let distance: number;
 
         // moving up/down
         // can only move horizontally or vertically
@@ -128,7 +112,7 @@ export class Gem {
 
         this.being_animated = true;
 
-        var duration = (distance / Gem.MOVEMENT_SPEED) * 1000;
+        const duration = (distance / Gem.MOVEMENT_SPEED) * 1000;
 
         createjs.Tween.get(this.shape, { override: true })
             .to(
@@ -138,10 +122,10 @@ export class Gem {
                 },
                 duration
             )
-            .call(function () {
-                _this.being_animated = false;
-                _this.column = column;
-                _this.line = line;
+            .call(() => {
+                this.being_animated = false;
+                this.column = column;
+                this.line = line;
 
                 if (callback) {
                     callback();
@@ -173,8 +157,7 @@ export class Gem {
     /**
      * Remove the gem with an animation. Callback is called when the animation ends.
      */
-    remove(callback?: () => any) {
-        var _this = this;
+    remove(callback?: () => void) {
         this.being_animated = true;
 
         createjs.Tween.get(this.shape)
@@ -185,9 +168,9 @@ export class Gem {
                 },
                 300
             )
-            .call(function () {
-                Gem._CONTAINER.removeChild(_this.shape);
-                _this.being_animated = false;
+            .call(() => {
+                Gem._CONTAINER.removeChild(this.shape);
+                this.being_animated = false;
 
                 if (callback) {
                     callback();

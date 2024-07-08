@@ -4,13 +4,13 @@ import * as Message from "./message";
 import { Gem } from "./gem";
 import { Grid } from "./grid";
 
-var GRID: Grid | null;
-var GRID_SIZE = 8;
-var SELECTED: Gem | null = null;
-var SCORE = 0;
-var GAME_OVER = false;
-var SELECT_SOUND: HTMLAudioElement;
-var COMBINE_SOUND: HTMLAudioElement;
+let GRID: Grid | null;
+const GRID_SIZE = 8;
+let SELECTED: Gem | null = null;
+let SCORE = 0;
+let GAME_OVER = false;
+let SELECT_SOUND: HTMLAudioElement;
+let COMBINE_SOUND: HTMLAudioElement;
 
 /**
  * Initialize the game related stuff.
@@ -24,7 +24,7 @@ export function init(canvas: HTMLCanvasElement, stage: createjs.Stage) {
     COMBINE_SOUND = new Audio("sounds/combine.wav");
     COMBINE_SOUND.load();
 
-    createjs.Ticker.on("tick", function (event) {
+    createjs.Ticker.on("tick", function () {
         stage.update();
 
         if (GRID && !GAME_OVER) {

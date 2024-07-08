@@ -1,27 +1,27 @@
 import { Timer } from "@drk4/utilities";
 import * as Game from "./game";
 
-var CONTAINER: HTMLElement;
-var SCORE: HTMLElement;
-var HIGH_SCORE: HTMLElement;
-var TIMER: Timer;
+let CONTAINER: HTMLElement;
+let SCORE: HTMLElement;
+let HIGH_SCORE: HTMLElement;
+let TIMER: Timer;
 
 /**
  * Initialize the game menu.
  */
 export function init() {
-    var container = <HTMLElement>document.querySelector("#GameMenu");
+    const container = <HTMLElement>document.querySelector("#GameMenu");
 
-    var restart = <HTMLElement>container.querySelector("#Restart");
+    const restart = <HTMLElement>container.querySelector("#Restart");
     restart.onclick = Game.restart;
 
-    var help = <HTMLElement>document.getElementById("Help");
+    const help = <HTMLElement>document.getElementById("Help");
     help.onclick = Game.help;
 
     SCORE = <HTMLElement>container.querySelector("#Score");
     HIGH_SCORE = <HTMLElement>document.getElementById("HighScore");
 
-    var timerValue = <HTMLElement>container.querySelector("#Timer");
+    const timerValue = <HTMLElement>container.querySelector("#Timer");
 
     TIMER = new Timer({
         updateElement: {

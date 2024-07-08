@@ -1,7 +1,7 @@
 import { getObject, saveObject } from "@drk4/utilities";
 import * as GameMenu from "./game_menu";
 
-var BEST_SCORE: number;
+let BEST_SCORE: number;
 
 /**
  * Initialize the high-score elements, and load the current highest score from the local storage.

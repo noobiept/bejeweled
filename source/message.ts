@@ -1,9 +1,9 @@
 import { isNumber, Timeout } from "@drk4/utilities";
 
-var CONTAINER: createjs.Container;
-var TEXT: createjs.Text;
-var BACKGROUND: createjs.Shape;
-var TIMEOUT: Utilities.Timeout;
+let CONTAINER: createjs.Container;
+let TEXT: createjs.Text;
+let BACKGROUND: createjs.Shape;
+let TIMEOUT: Timeout;
 
 let getCW: () => number; // TODO
 
@@ -17,9 +17,9 @@ export function init(stage: createjs.Stage, getCanvasWidth: () => number) {
     getCW = getCanvasWidth;
 
     // canvas
-    var canvas = <HTMLCanvasElement>stage.canvas;
-    var halfWidth = canvas.width / 2;
-    var halfHeight = canvas.height / 2;
+    const canvas = <HTMLCanvasElement>stage.canvas;
+    const halfWidth = canvas.width / 2;
+    const halfHeight = canvas.height / 2;
 
     // background
     BACKGROUND = new createjs.Shape();
@@ -73,7 +73,7 @@ function drawBackground() {
     const textHeight = TEXT.getMeasuredHeight() + 15;
     const canvasWidth = getCW();
 
-    var g = BACKGROUND.graphics;
+    const g = BACKGROUND.graphics;
 
     g.beginFill("#B8CEB9");
     g.drawRect(-canvasWidth / 2, 0, canvasWidth, textHeight);
