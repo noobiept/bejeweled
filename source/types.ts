@@ -18,3 +18,8 @@ export enum GemAction {
     move,
     remove,
 }
+
+export type Size = {
+    width: number;
+    height: number;
+};

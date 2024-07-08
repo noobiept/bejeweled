@@ -3,6 +3,7 @@ import { getAsset } from "./preload";
 
 import * as Game from "./game";
 import { GemType } from "./types";
+import type { Stage } from "./stage";
 
 export class Gem {
     static _CONTAINER: createjs.Container;
@@ -15,7 +16,7 @@ export class Gem {
     /**
      * Initialize the gem's container.
      */
-    static init(stage: createjs.Stage) {
+    static init(stage: Stage) {
         Gem._CONTAINER = new createjs.Container();
 
         stage.addChild(Gem._CONTAINER);

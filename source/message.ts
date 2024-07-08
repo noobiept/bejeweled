@@ -1,25 +1,26 @@
 import { isNumber, Timeout } from "@drk4/utilities";
+import type { Stage } from "./stage";
 
 let CONTAINER: createjs.Container;
 let TEXT: createjs.Text;
 let BACKGROUND: createjs.Shape;
 let TIMEOUT: Timeout;
 
-let getCW: () => number; // TODO
+let GET_CANVAS_WIDTH: () => number;
 
 /**
  * Initialize the message elements.
  */
-export function init(stage: createjs.Stage, getCanvasWidth: () => number) {
+export function init(stage: Stage) {
     // timeout
     TIMEOUT = new Timeout();
 
-    getCW = getCanvasWidth;
-
     // canvas
-    const canvas = <HTMLCanvasElement>stage.canvas;
-    const halfWidth = canvas.width / 2;
-    const halfHeight = canvas.height / 2;
+    const size = stage.getSize();
+    const halfWidth = size.width / 2;
+    const halfHeight = size.height / 2;
+
+    GET_CANVAS_WIDTH = () => stage.getSize().width;
 
     // background
     BACKGROUND = new createjs.Shape();
@@ -71,7 +72,7 @@ export function hide() {
  */
 function drawBackground() {
     const textHeight = TEXT.getMeasuredHeight() + 15;
-    const canvasWidth = getCW();
+    const canvasWidth = GET_CANVAS_WIDTH();
 
     const g = BACKGROUND.graphics;
 

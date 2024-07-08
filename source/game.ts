@@ -3,6 +3,7 @@ import * as HighScore from "./high_score";
 import * as Message from "./message";
 import { Gem } from "./gem";
 import { Grid } from "./grid";
+import type { Stage } from "./stage";
 
 let GRID: Grid | null;
 const GRID_SIZE = 8;
@@ -15,18 +16,18 @@ let COMBINE_SOUND: HTMLAudioElement;
 /**
  * Initialize the game related stuff.
  */
-export function init(canvas: HTMLCanvasElement, stage: createjs.Stage) {
-    canvas.width = GRID_SIZE * Gem.SIZE;
-    canvas.height = GRID_SIZE * Gem.SIZE;
+export function init(stage: Stage) {
+    stage.setSize({
+        width: GRID_SIZE * Gem.SIZE,
+        height: GRID_SIZE * Gem.SIZE,
+    });
 
     SELECT_SOUND = new Audio("sounds/select.wav");
     SELECT_SOUND.load();
     COMBINE_SOUND = new Audio("sounds/combine.wav");
     COMBINE_SOUND.load();
 
-    createjs.Ticker.on("tick", function () {
-        stage.update();
-
+    stage.addTickListener(() => {
         if (GRID && !GAME_OVER) {
             GRID.tick();
         }

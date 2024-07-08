@@ -4,6 +4,9 @@ import { Gem } from "./gem";
 import * as HighScore from "./high_score";
 import * as Message from "./message";
 import * as Preload from "./preload";
+import { Stage } from "./stage";
+
+let STAGE: Stage;
 
 /**
  * Start of the program.
@@ -12,14 +15,12 @@ window.onload = function () {
     // setting up the canvas and stage
     const canvas = <HTMLCanvasElement>document.querySelector("#MainCanvas");
 
-    const stage = new createjs.Stage(canvas);
-
-    createjs.Ticker.timingMode = createjs.Ticker.RAF;
+    STAGE = new Stage(canvas);
 
     // init of the game parts
-    Game.init(canvas, stage);
-    Gem.init(stage);
-    Message.init(stage, () => canvas.width);
+    Game.init(STAGE);
+    Gem.init(STAGE);
+    Message.init(STAGE);
     GameMenu.init();
     HighScore.init();
     Preload.init();
