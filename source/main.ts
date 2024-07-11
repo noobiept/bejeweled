@@ -6,6 +6,8 @@ import * as Message from "./message";
 import * as Preload from "./preload";
 import { Stage } from "./stage";
 
+import "../css/style.css";
+
 let STAGE: Stage;
 
 /**
