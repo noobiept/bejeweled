@@ -4,6 +4,7 @@ import { Gem } from "./gem";
 import * as HighScore from "./high_score";
 import * as Message from "./message";
 import * as Preload from "./preload";
+import * as Audio from "./audio";
 import { Stage } from "./stage";
 
 import "../css/style.css";
@@ -21,6 +22,7 @@ window.onload = function () {
 
     // init of the game parts
     Game.init(STAGE);
+    Audio.init();
     Gem.init(STAGE);
     Message.init(STAGE);
     GameMenu.init();

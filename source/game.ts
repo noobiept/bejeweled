@@ -4,14 +4,13 @@ import * as Message from "./message";
 import { Gem } from "./gem";
 import { Grid } from "./grid";
 import type { Stage } from "./stage";
+import { playSelectSound } from "./audio";
 
 let GRID: Grid | null;
 const GRID_SIZE = 8;
 let SELECTED: Gem | null = null;
 let SCORE = 0;
 let GAME_OVER = false;
-let SELECT_SOUND: HTMLAudioElement;
-let COMBINE_SOUND: HTMLAudioElement;
 
 /**
  * Initialize the game related stuff.
@@ -21,12 +20,6 @@ export function init(stage: Stage) {
         width: GRID_SIZE * Gem.SIZE,
         height: GRID_SIZE * Gem.SIZE,
     });
-
-    SELECT_SOUND = new Audio("sounds/select.wav");
-    SELECT_SOUND.load();
-    COMBINE_SOUND = new Audio("sounds/combine.wav");
-    COMBINE_SOUND.load();
-
     stage.addTickListener(() => {
         if (GRID && !GAME_OVER) {
             GRID.tick();
@@ -148,20 +141,4 @@ export function over(message: string) {
     Message.show(message + "\nScore: " + SCORE, 2000, function () {
         restart();
     });
-}
-
-/**
- * When a gem is selected, play a sound.
- */
-export function playSelectSound() {
-    SELECT_SOUND.currentTime = 0;
-    SELECT_SOUND.play();
-}
-
-/**
- * When there's a gem combination, play a sound.
- */
-export function playCombineSound() {
-    COMBINE_SOUND.currentTime = 0;
-    COMBINE_SOUND.play();
 }

@@ -3,6 +3,7 @@ import { Gem } from "./gem";
 import * as Game from "./game";
 import * as GameMenu from "./game_menu";
 import type { GemChain, GemType } from "./types";
+import { playCombineSound } from "./audio";
 
 export class Grid {
     /*
@@ -295,6 +296,27 @@ export class Grid {
         }
     }
 
+    private removeChain(
+        endColumn: number,
+        endLine: number,
+        count: number,
+        vertical: boolean
+    ) {
+        if (vertical === true) {
+            for (let line = endLine; line > endLine - count; line--) {
+                this.removeGem(endColumn, line);
+            }
+        } else {
+            for (let column = endColumn; column > endColumn - count; column--) {
+                this.removeGem(column, endLine);
+            }
+        }
+
+        playCombineSound();
+        Game.addToScore(count * 10);
+        GameMenu.addToTimer(count);
+    }
+
     /**
      * Checks for gem chains (3+ gems in horizontal/vertical line), and clears them.
      */
@@ -302,31 +324,6 @@ export class Grid {
         const grid = this.grid;
         const size = this.size;
         let foundChains = false;
-
-        const removeChain = (
-            endColumn: number,
-            endLine: number,
-            count: number,
-            vertical: boolean
-        ) => {
-            if (vertical === true) {
-                for (let line = endLine; line > endLine - count; line--) {
-                    this.removeGem(endColumn, line);
-                }
-            } else {
-                for (
-                    let column = endColumn;
-                    column > endColumn - count;
-                    column--
-                ) {
-                    this.removeGem(column, endLine);
-                }
-            }
-
-            Game.playCombineSound();
-            Game.addToScore(count * 10);
-            GameMenu.addToTimer(count);
-        };
 
         for (let column = 0; column < size; column++) {
             for (let line = 0; line < size; line++) {
@@ -392,7 +389,7 @@ export class Grid {
                     foundChains = true;
 
                     const chain = horizontalChains[a];
-                    removeChain(
+                    this.removeChain(
                         chain.column + chain.size - 1,
                         chain.line,
                         chain.size,
@@ -404,7 +401,7 @@ export class Grid {
                     foundChains = true;
 
                     const chain = verticalChains[a];
-                    removeChain(
+                    this.removeChain(
                         chain.column,
                         chain.line + chain.size - 1,
                         chain.size,
