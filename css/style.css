@@ -1,6 +1,7 @@
 body {
     text-align: center;
     background-color: rgb(245, 245, 245);
+    min-width: max-content;
 }
 
 ul {
