@@ -7,6 +7,7 @@ let BACKGROUND: createjs.Shape;
 let TIMEOUT: Timeout;
 
 let GET_CANVAS_WIDTH: () => number;
+const PADDING = 10;
 
 /**
  * Initialize the message elements.
@@ -28,6 +29,7 @@ export function init(stage: Stage) {
     // text
     TEXT = new createjs.Text("", "30px monospace");
     TEXT.textAlign = "center";
+    TEXT.lineHeight = TEXT.getMeasuredLineHeight() + PADDING;
 
     // container
     CONTAINER = new createjs.Container();
@@ -45,6 +47,10 @@ export function init(stage: Stage) {
  */
 export function show(text: string, timeout?: number, callback?: () => void) {
     TEXT.text = text;
+
+    const textHeight = TEXT.getMeasuredHeight();
+    TEXT.y = -textHeight / 2;
+
     drawBackground();
     CONTAINER.visible = true;
 
@@ -71,12 +77,12 @@ export function hide() {
  * Draw the message's background, centered behind the message.
  */
 function drawBackground() {
-    const textHeight = TEXT.getMeasuredHeight() + 15;
+    const textHeight = TEXT.getMeasuredHeight() + PADDING;
     const canvasWidth = GET_CANVAS_WIDTH();
 
     const g = BACKGROUND.graphics;
 
     g.beginFill("#B8CEB9");
-    g.drawRect(-canvasWidth / 2, 0, canvasWidth, textHeight);
+    g.drawRect(-canvasWidth / 2, -textHeight / 2, canvasWidth, textHeight);
     g.endFill();
 }
