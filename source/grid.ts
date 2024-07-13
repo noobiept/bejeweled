@@ -1,9 +1,14 @@
 import { getRandomInt } from "@drk4/utilities";
 import { Gem } from "./gem";
-import * as Game from "./game";
-import * as GameMenu from "./game_menu";
 import type { GemChain, GemType } from "./types";
 import { playCombineSound } from "./audio";
+
+export type GridArgs = {
+    size: number;
+    onClick: (gem: Gem) => void;
+    onGameOver: () => void;
+    onRemoveChain: (count: number) => void;
+};
 
 export class Grid {
     /*
@@ -111,10 +116,17 @@ export class Grid {
     clearing: boolean;
     animated_count = 0;
 
-    constructor(size: number) {
+    private onClick: (gem: Gem) => void;
+    private onGameOver: () => void;
+    private onRemoveChain: (count: number) => void;
+
+    constructor({ size, onClick, onGameOver, onRemoveChain }: GridArgs) {
         this.grid = [];
         this.size = size;
         this.clearing = false;
+        this.onClick = onClick;
+        this.onGameOver = onGameOver;
+        this.onRemoveChain = onRemoveChain;
 
         for (let column = 0; column < size; column++) {
             this.grid[column] = [];
@@ -132,7 +144,12 @@ export class Grid {
     newRandomGem(column: number, line: number) {
         const gemType = getRandomInt(0, Gem.TYPE_COUNT - 1);
 
-        const gem = new Gem(gemType);
+        const gem = new Gem({
+            id: gemType,
+            onClick: (gem) => {
+                this.onClick(gem);
+            },
+        });
         gem.positionIn(column, line);
 
         return gem;
@@ -271,7 +288,7 @@ export class Grid {
 
         if (!aChainCleared) {
             if (!this.isThereMoreValidMoves()) {
-                Game.over("No more valid moves!");
+                this.onGameOver();
             }
         }
 
@@ -313,8 +330,7 @@ export class Grid {
         }
 
         playCombineSound();
-        Game.addToScore(count * 10);
-        GameMenu.addToTimer(count);
+        this.onRemoveChain(count);
     }
 
     /**
@@ -541,16 +557,6 @@ export class Grid {
         }
 
         return adjacentGems;
-    }
-
-    /**
-     * Convert a column/line position to an x/y position.
-     */
-    static toCanvasPosition(column: number, line: number) {
-        return {
-            x: column * Gem.SIZE + Gem.SIZE / 2,
-            y: line * Gem.SIZE + Gem.SIZE / 2,
-        };
     }
 
     /**

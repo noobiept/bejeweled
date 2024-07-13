@@ -1,22 +1,28 @@
 import { Timer } from "@drk4/utilities";
-import * as Game from "./game";
 
 let CONTAINER: HTMLElement;
 let SCORE: HTMLElement;
 let HIGH_SCORE: HTMLElement;
 let TIMER: Timer;
+let ON_END: () => void;
+
+export type GameMenuInitArgs = {
+    onRestart: () => void;
+    onHelp: () => void;
+    onEnd: () => void;
+};
 
 /**
  * Initialize the game menu.
  */
-export function init() {
+export function init({ onRestart, onHelp, onEnd }: GameMenuInitArgs) {
     const container = <HTMLElement>document.querySelector("#GameMenu");
 
     const restart = <HTMLElement>container.querySelector("#Restart");
-    restart.onclick = Game.restart;
+    restart.onclick = onRestart;
 
     const help = <HTMLElement>document.getElementById("Help");
-    help.onclick = Game.help;
+    help.onclick = onHelp;
 
     SCORE = <HTMLElement>container.querySelector("#Score");
     HIGH_SCORE = <HTMLElement>document.getElementById("HighScore");
@@ -29,6 +35,7 @@ export function init() {
         },
     });
     CONTAINER = container;
+    ON_END = onEnd;
 }
 
 /**
@@ -59,9 +66,7 @@ export function startTimer(startTime: number) {
     TIMER.start({
         startValue: startTime * 1000,
         endValue: 0,
-        onEnd: function () {
-            Game.over("No time left!");
-        },
+        onEnd: ON_END,
         countDown: true,
     });
 }

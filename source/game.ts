@@ -33,7 +33,17 @@ export function init(stage: Stage) {
 export function start() {
     GAME_OVER = false;
     SELECTED = null;
-    GRID = new Grid(GRID_SIZE);
+    GRID = new Grid({
+        size: GRID_SIZE,
+        onClick: gemClicked,
+        onGameOver: () => {
+            over("No more valid moves!");
+        },
+        onRemoveChain: (count) => {
+            addToScore(count * 10);
+            GameMenu.addToTimer(count);
+        },
+    });
 
     GameMenu.startTimer(30);
     GameMenu.updateScore(SCORE);

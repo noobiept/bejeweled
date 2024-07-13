@@ -1,9 +1,12 @@
-import { Grid } from "./grid";
 import { getAsset } from "./preload";
 
-import * as Game from "./game";
 import { GemType } from "./types";
 import type { Stage } from "./stage";
+
+export type GemArgs = {
+    id: GemType;
+    onClick: (gem: Gem) => void;
+};
 
 export class Gem {
     static _CONTAINER: createjs.Container;
@@ -22,6 +25,16 @@ export class Gem {
         stage.addChild(Gem._CONTAINER);
     }
 
+    /**
+     * Convert a column/line position to an x/y position.
+     */
+    static toCanvasPosition(column: number, line: number) {
+        return {
+            x: column * Gem.SIZE + Gem.SIZE / 2,
+            y: line * Gem.SIZE + Gem.SIZE / 2,
+        };
+    }
+
     shape: createjs.Container;
     gem: createjs.Bitmap;
     selection: createjs.Bitmap;
@@ -32,7 +45,7 @@ export class Gem {
     already_checked_vertical = false;
     being_animated = false;
 
-    constructor(id: GemType) {
+    constructor({ id, onClick }: GemArgs) {
         const shape = new createjs.Container();
         const gem = new createjs.Bitmap(
             <HTMLImageElement>getAsset(GemType[id])
@@ -57,7 +70,7 @@ export class Gem {
         shape.hitArea = hitArea;
         shape.on("click", () => {
             if (!this.being_animated) {
-                Game.gemClicked(this);
+                onClick(this);
             }
         });
 
@@ -81,7 +94,7 @@ export class Gem {
         this.column = column;
         this.line = line;
 
-        const canvasPosition = Grid.toCanvasPosition(column, line);
+        const canvasPosition = Gem.toCanvasPosition(column, line);
 
         this.shape.x = canvasPosition.x;
         this.shape.y = canvasPosition.y;
@@ -91,7 +104,7 @@ export class Gem {
      * Move the gem from the current position to a new one (with a move animation).
      */
     moveTo(column: number, line: number, callback?: () => void) {
-        const canvasPosition = Grid.toCanvasPosition(column, line);
+        const canvasPosition = Gem.toCanvasPosition(column, line);
         const distanceY = Math.abs(this.line - line) * Gem.SIZE;
         const distanceX = Math.abs(this.column - column) * Gem.SIZE;
         let distance: number;

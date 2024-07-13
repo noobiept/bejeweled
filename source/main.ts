@@ -25,7 +25,13 @@ window.onload = function () {
     Audio.init();
     Gem.init(STAGE);
     Message.init(STAGE);
-    GameMenu.init();
+    GameMenu.init({
+        onRestart: Game.restart,
+        onHelp: Game.help,
+        onEnd: () => {
+            Game.over("No time left!");
+        },
+    });
     HighScore.init();
     Preload.init();
 
