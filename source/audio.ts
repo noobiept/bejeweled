@@ -1,29 +1,29 @@
-let SELECT_SOUND: HTMLAudioElement;
-let COMBINE_SOUND: HTMLAudioElement;
+const SELECT_KEY = "select";
+const COMBINE_KEY = "combine";
 
 export function init() {
-    SELECT_SOUND = new Audio("sounds/select.wav");
-    SELECT_SOUND.load();
-    COMBINE_SOUND = new Audio("sounds/combine.wav");
-    COMBINE_SOUND.load();
+    createjs.Sound.registerSound("sounds/select.wav", SELECT_KEY);
+    createjs.Sound.registerSound("sounds/combine.wav", COMBINE_KEY);
 }
 
 /**
  * When a gem is selected, play a sound.
  */
 export function playSelectSound() {
-    SELECT_SOUND.currentTime = 0;
-    SELECT_SOUND.play().catch(() => {
+    try {
+        createjs.Sound.play(SELECT_KEY);
+    } catch {
         // do nothing
-    });
+    }
 }
 
 /**
  * When there's a gem combination, play a sound.
  */
 export function playCombineSound() {
-    COMBINE_SOUND.currentTime = 0;
-    COMBINE_SOUND.play().catch(() => {
+    try {
+        createjs.Sound.play(COMBINE_KEY);
+    } catch {
         // do nothing
-    });
+    }
 }
