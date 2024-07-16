@@ -121,6 +121,9 @@ export function addToScore(score: number) {
 export function restart() {
     HighScore.add(SCORE);
 
+    // clear all animations
+    createjs.Tween.removeAllTweens();
+
     GRID!.clear();
     GRID = null;
 
