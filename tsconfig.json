@@ -8,7 +8,11 @@
         "strictNullChecks": true,
         "target": "ES2022",
         "module": "ES2022",
-        "moduleResolution": "Node"
+        "moduleResolution": "Node",
+        "paths": {
+            // workaround for: https://github.com/vitest-dev/vitest/issues/4567
+            "rollup/parseAst": ["./node_modules/rollup/dist/parseAst"]
+        }
     },
     "include": ["source/**/*.ts"]
 }
