@@ -35,8 +35,8 @@
     },
     "scripts": {
         "dev": "vite",
-        "dev:w": "tsc --watch",
-        "build": "tsc && vite build",
+        "dev:w": "tsc --noEmit --watch",
+        "build": "tsc --noEmit && vite build",
         "preview": "vite preview",
         "format:check": "prettier --check \"**/*.{html,css,json,js,ts,md}\"",
         "format:run": "prettier --write \"**/*.{html,css,json,js,ts,md}\"",
